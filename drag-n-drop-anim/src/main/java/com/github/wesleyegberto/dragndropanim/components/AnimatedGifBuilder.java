@@ -1,4 +1,4 @@
-package com.github.wesleyegberto.dragndropanim.gif;
+package com.github.wesleyegberto.dragndropanim.components;
 
 public class AnimatedGifBuilder {
 

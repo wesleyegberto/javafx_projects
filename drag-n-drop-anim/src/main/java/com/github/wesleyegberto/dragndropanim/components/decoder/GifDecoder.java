@@ -1,4 +1,4 @@
-package com.github.wesleyegberto.dragndropanim.gif;
+package com.github.wesleyegberto.dragndropanim.components.decoder;
 
 import java.net.*;
 import java.io.*;
@@ -11,7 +11,7 @@ import java.awt.image.*;
  * <br><pre>
  * Example:
  *    GifDecoder d = new GifDecoder();
- *    d.read("sample.gif");
+ *    d.read("sample.components");
  *    int n = d.getFrameCount();
  *    for (int i = 0; i < n; i++) {
  *       BufferedImage frame = d.getFrame(i);  // frame i

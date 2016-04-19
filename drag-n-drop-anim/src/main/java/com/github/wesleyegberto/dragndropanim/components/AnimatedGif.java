@@ -1,5 +1,6 @@
-package com.github.wesleyegberto.dragndropanim.gif;
+package com.github.wesleyegberto.dragndropanim.components;
 
+import com.github.wesleyegberto.dragndropanim.components.decoder.GifDecoder;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
@@ -7,8 +8,14 @@ import javafx.scene.image.WritableImage;
 import java.awt.image.BufferedImage;
 
 public class AnimatedGif extends Animation {
+	private String filename;
+
+	public String getFilename() {
+		return filename;
+	}
 
 	public AnimatedGif(String filename, double durationMs) {
+		this.filename = filename;
 		GifDecoder d = new GifDecoder();
 		d.read(filename);
 

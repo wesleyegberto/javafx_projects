@@ -1,4 +1,4 @@
-package com.github.wesleyegberto.dragndropanim.gif;
+package com.github.wesleyegberto.dragndropanim.components;
 
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
@@ -7,7 +7,6 @@ import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
 public class Animation extends Transition {
-
 	private ImageView imageView;
 	private int count;
 	private int lastIndex;
