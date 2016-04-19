@@ -18,6 +18,7 @@ public class ImageViewMouseListener implements EventHandler<MouseEvent> {
 	@Override
 	public void handle(MouseEvent evt) {
 		EventType<? extends MouseEvent> eventType = evt.getEventType();
+		System.out.println("[MouseEvent] " + eventType);
 		if(eventType == MouseDragEvent.MOUSE_PRESSED) {
 			/*orgSceneX = evt.getSceneX();
 			orgSceneY = evt.getSceneY();

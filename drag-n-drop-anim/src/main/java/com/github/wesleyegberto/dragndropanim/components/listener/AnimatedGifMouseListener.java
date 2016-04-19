@@ -13,7 +13,7 @@ public class AnimatedGifMouseListener implements EventHandler<MouseEvent> {
 
 	@Override
 	public void handle(MouseEvent event) {
-		System.out.println("[MouseEvent] " + event.getEventType());
+		//System.out.println("[MouseEvent] " + event.getEventType());
 		if(event.getEventType() == MouseEvent.MOUSE_ENTERED) {
 			animatedGif.play();
 		} else if(event.getEventType() == MouseEvent.MOUSE_EXITED) {

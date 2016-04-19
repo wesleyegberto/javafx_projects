@@ -25,10 +25,10 @@ public class WindowController {
 
 	public void initialize() {
 		gifsActions = new AnimatedGif[]{
-			AnimatedGifBuilder.fromGifAtResources("/images/acao_avancar.components").withDuration(1000).withCycleCount(10).build(),
-			AnimatedGifBuilder.fromGifAtResources("/images/acao_recuar.components").withDuration(1000).withCycleCount(10).build(),
-			AnimatedGifBuilder.fromGifAtResources("/images/acao_esquerda.components").withDuration(1000).withCycleCount(10).build(),
-			AnimatedGifBuilder.fromGifAtResources("/images/acao_direita.components").withDuration(1000).withCycleCount(10).build()
+			AnimatedGifBuilder.fromGifAtResources("/images/acao_avancar.gif").withDuration(1000).withCycleCount(10).build(),
+			AnimatedGifBuilder.fromGifAtResources("/images/acao_recuar.gif").withDuration(1000).withCycleCount(10).build(),
+			AnimatedGifBuilder.fromGifAtResources("/images/acao_esquerda.gif").withDuration(1000).withCycleCount(10).build(),
+			AnimatedGifBuilder.fromGifAtResources("/images/acao_direita.gif").withDuration(1000).withCycleCount(10).build()
 		};
 
 		initializeDragEventsTarge();
@@ -36,10 +36,16 @@ public class WindowController {
 		ImageView imageView = null;
 		for (AnimatedGif animGif : gifsActions) {
 			imageView = animGif.getView();
-			AnimatedGifMouseListener listener = new AnimatedGifMouseListener(animGif);
-			imageView.setOnMouseEntered(listener);
-			imageView.setOnMouseExited(listener);
-			initializeDragEvents(imageView, animGif);
+
+			AnimatedGifMouseListener listenerGif = new AnimatedGifMouseListener(animGif);
+			imageView.setOnMouseEntered(listenerGif);
+			imageView.setOnMouseExited(listenerGif);
+
+			ImageViewMouseListener mouseListener = new ImageViewMouseListener(animGif);
+			imageView.setOnMousePressed(mouseListener);
+			imageView.setOnDragDetected(mouseListener);
+			imageView.setOnMouseReleased(mouseListener);
+
 			boxCommands.getChildren().add(imageView);
 		}
 	}
@@ -67,8 +73,10 @@ public class WindowController {
 			boolean success = false;
 			if (db.hasString()) {
 				System.out.println("[OnDragDropped] Dropped: " + db.getString());
-				ImageView imgViewDropped = imgViewOnDragging;
-				paneTarget.getChildren().add(imgViewDropped);
+				if(imgViewOnDragging != null) {
+					ImageView imgViewDropped = imgViewOnDragging;
+					paneTarget.getChildren().add(imgViewDropped);
+				}
 				success = true;
 			}
 			evt.setDropCompleted(success);
@@ -86,14 +94,6 @@ public class WindowController {
 
 
 	private void initializeDragEvents(ImageView imgView, AnimatedGif animGif) {
-		// Source
-		ImageViewMouseListener listener = new ImageViewMouseListener(animGif);
-		//imgView.setOnMousePressed(listener);
-		imgView.setOnMouseDragExited(listener);
-		imgView.setOnDragDetected(listener);
-	}
-
-	private void initializeDragEventsUsingLambdas(ImageView imgView, AnimatedGif animGif) {
 		imgView.setOnDragDetected(event -> {
 			((ImageView) event.getSource()).setCursor(Cursor.CLOSED_HAND);
 			Dragboard db = imgView.startDragAndDrop(TransferMode.ANY);
