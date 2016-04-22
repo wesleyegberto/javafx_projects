@@ -6,19 +6,22 @@ import com.github.wesleyegberto.dragndropanim.components.listener.AnimatedGifMou
 import com.github.wesleyegberto.dragndropanim.components.listener.ImageViewMouseListener;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+
 
 public class WindowController {
 	@FXML
 	private VBox boxCommands;
 	@FXML
-	private Pane paneTarget;
+	private ScrollPane sclPaneTarget;
+	@FXML
+	private VBox boxTarget;
 
 	private AnimatedGif[] gifsActions;
 	private ImageView imgViewOnDragging;
@@ -52,37 +55,39 @@ public class WindowController {
 
 	private void initializeDragEventsTarge() {
 		// Target
-		paneTarget.setOnDragEntered(event -> {
-			if (event.getGestureSource() != paneTarget && event.getDragboard().hasString()) {
+		sclPaneTarget.setOnDragEntered(event -> {
+			if (event.getGestureSource() != sclPaneTarget && event.getDragboard().hasString()) {
 				// destacar algo
 			}
 			event.consume();
 		});
-		paneTarget.setOnDragOver(evt -> {
-			if (evt.getGestureSource() != paneTarget && evt.getDragboard().hasString()) {
+		sclPaneTarget.setOnDragOver(evt -> {
+			if (evt.getGestureSource() != sclPaneTarget && evt.getDragboard().hasString()) {
 				evt.acceptTransferModes(TransferMode.MOVE);
 			}
 			evt.consume();
 		});
-		paneTarget.setOnDragExited(evt -> {
+		sclPaneTarget.setOnDragExited(evt -> {
 			// reverter borda
 			evt.consume();
 		});
-		paneTarget.setOnDragDropped(evt -> {
+		sclPaneTarget.setOnDragDropped(evt -> {
 			Dragboard db = evt.getDragboard();
 			boolean success = false;
 			if (db.hasString()) {
 				System.out.println("[OnDragDropped] Dropped: " + db.getString());
-				if(imgViewOnDragging != null) {
-					ImageView imgViewDropped = imgViewOnDragging;
-					paneTarget.getChildren().add(imgViewDropped);
-				}
+				success = true;
+			}
+			if(evt.getGestureSource() != null && evt.getGestureSource() instanceof ImageView) {
+				System.out.println("[OnDragDropped] Gesture source: " + evt.getGestureSource());
+				ImageView imgViewSource = (ImageView) evt.getGestureSource();
+				boxTarget.getChildren().add(imgViewSource);
 				success = true;
 			}
 			evt.setDropCompleted(success);
 			evt.consume();
 		});
-		paneTarget.setOnDragDone(evt -> {
+		sclPaneTarget.setOnDragDone(evt -> {
 			/* the drag and drop gesture ended */
 			/* if the data was successfully moved, clear it */
 			if (evt.getTransferMode() == TransferMode.MOVE) {
@@ -111,35 +116,35 @@ public class WindowController {
 		});
 
 		// Target
-		paneTarget.setOnDragEntered(event -> {
-			if (event.getGestureSource() != paneTarget && event.getDragboard().hasString()) {
+		sclPaneTarget.setOnDragEntered(event -> {
+			if (event.getGestureSource() != sclPaneTarget && event.getDragboard().hasString()) {
 				// destacar algo
 			}
 			event.consume();
 		});
-		paneTarget.setOnDragOver(evt -> {
-			if (evt.getGestureSource() != paneTarget && evt.getDragboard().hasString()) {
+		sclPaneTarget.setOnDragOver(evt -> {
+			if (evt.getGestureSource() != sclPaneTarget && evt.getDragboard().hasString()) {
 				evt.acceptTransferModes(TransferMode.MOVE);
 			}
 			evt.consume();
 		});
-		paneTarget.setOnDragExited(evt -> {
+		sclPaneTarget.setOnDragExited(evt -> {
 			// reverter borda
 			evt.consume();
 		});
-		paneTarget.setOnDragDropped(evt -> {
+		sclPaneTarget.setOnDragDropped(evt -> {
 			Dragboard db = evt.getDragboard();
 			boolean success = false;
 			if (db.hasString()) {
 				System.out.println("[OnDragDropped] Dropped: " + db.getString());
 				ImageView imgViewDropped = imgViewOnDragging;
-				paneTarget.getChildren().add(imgViewDropped);
+				boxTarget.getChildren().add(imgViewDropped);
 				success = true;
 			}
 			evt.setDropCompleted(success);
 			evt.consume();
 		});
-		paneTarget.setOnDragDone(evt -> {
+		sclPaneTarget.setOnDragDone(evt -> {
 			if (evt.getTransferMode() == TransferMode.MOVE) {
 				System.out.println("[OnDragDone] Drag done!");
 			}

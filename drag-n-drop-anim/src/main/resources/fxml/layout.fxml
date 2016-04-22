@@ -7,14 +7,10 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1011.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.wesleyegberto.dragndropanim.WindowController">
    <left>
-      <ScrollPane fx:id="paneCommands" prefHeight="800.0" BorderPane.alignment="CENTER">
+      <ScrollPane prefHeight="800.0" BorderPane.alignment="CENTER">
          <content>
             <VBox fx:id="boxCommands">
                <children>
-                  <!--<ImageView fx:id="imvAvancar" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fx:id="imvRecuar" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fx:id="imvVirarEsquerda" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fx:id="imvVirarDireta" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />-->
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -24,6 +20,15 @@
       </ScrollPane>
    </left>
    <center>
-      <Pane fx:id="paneTarget" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #cecece;" BorderPane.alignment="CENTER" />
+      <ScrollPane fx:id="sclPaneTarget" prefHeight="800.0" BorderPane.alignment="CENTER">
+         <content>
+            <Pane fx:id="paneTarget" prefHeight="800.0" style="-fx-background-color: #cecece;" BorderPane.alignment="CENTER">
+	           <VBox fx:id="boxTarget">
+      	          <children>
+      	          </children>
+      	       </VBox>
+            </Pane>
+         </content>
+      </ScrollPane>
    </center>
 </BorderPane>

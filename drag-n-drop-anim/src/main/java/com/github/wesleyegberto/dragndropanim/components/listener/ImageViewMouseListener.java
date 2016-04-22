@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 
 public class ImageViewMouseListener implements EventHandler<MouseEvent> {
+	public static String CLIPBOARD_CONTENT = "Command_Drag";
 	AnimatedGif animGif;
 
 	public ImageViewMouseListener(AnimatedGif animGif) {
@@ -32,7 +33,7 @@ public class ImageViewMouseListener implements EventHandler<MouseEvent> {
 			imgView.setCursor(Cursor.CLOSED_HAND);
 			Dragboard db = imgView.startDragAndDrop(TransferMode.ANY);
 			ClipboardContent content = new ClipboardContent();
-			content.putString("ImageView dragging");
+			content.putString(CLIPBOARD_CONTENT);
 			//imgViewOnDragging = imgView;
 			db.setDragView(new Image(getClass().getResourceAsStream("/images/dragdrop.png"), 64.0, 64.0, true, true));
 			db.setContent(content);
