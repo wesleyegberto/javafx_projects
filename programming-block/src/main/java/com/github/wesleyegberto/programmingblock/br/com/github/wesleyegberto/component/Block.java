@@ -1,10 +1,17 @@
 package com.github.wesleyegberto.programmingblock.br.com.github.wesleyegberto.component;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -16,6 +23,8 @@ import java.util.List;
  * @author Wesley
  */
 public abstract class Block extends Parent {
+	protected Parent root;
+
 	protected String backgroundPath;
 	protected ImageView background;
 	protected String code;
@@ -56,38 +65,77 @@ public abstract class Block extends Parent {
 				startDragY = getTranslateY();
 				// Salva o ponto em que ocorreu o click
 				dragAnchor = new Point2D(evt.getSceneX(), evt.getSceneY());
+				evt.consume();
 			});
 		} else {
 			setOnMousePressed(evt -> {
+				System.out.println("Mouse pressed");
 				// Salva as posições iniciais
 				startDragX = getTranslateX();
 				startDragY = getTranslateY();
 				// Salva o ponto em que ocorreu o click
 				dragAnchor = new Point2D(evt.getSceneX(), evt.getSceneY());
+				toFront();
+				evt.consume();
 			});
 			setOnMouseDragged(evt -> {
 				double newTranslateX = startDragX + evt.getSceneX() - dragAnchor.getX();
 				double newTranslateY = startDragY + evt.getSceneY() - dragAnchor.getY();
 				setTranslateX(newTranslateX);
 				setTranslateY(newTranslateY);
-				/*
-				// Calcula a distância das bordas em X a partir da posição atual da peça
-				double minTranslateX = minX;
-				double maxTranslateX = maxX - width;
-				// Calcula a distância das bordas em Y a partir da posição atual da peça
-				double minTranslateY = minY - height;
-				double maxTranslateY = maxY - height;
-				// Se não ultrapassou os limites efetua o dragging
-				System.out.printf("%f %f\t%f %f\t%f %f\n", minTranslateX, maxTranslateX, minTranslateY, maxTranslateY, newTranslateY, newTranslateX);
-				if ((newTranslateX > minTranslateX) && (newTranslateX < maxTranslateX) &&
-					(newTranslateY > minTranslateY) && (newTranslateY < maxTranslateY)) {
-					setTranslateX(newTranslateX);
-					setTranslateY(newTranslateY);
-				}*/
+				evt.consume();
 			});
 			setOnDragDetected(event -> {
+				System.out.println("Drag detected");
 				setCursor(Cursor.CLOSED_HAND);
+				toFront();
+
+				Dragboard dragboard = startDragAndDrop(TransferMode.ANY);
+				ClipboardContent clipboard = new ClipboardContent();
+				clipboard.putString("Foi");
+
+				dragboard.setContent(clipboard);
+				event.consume();
 			});
+
+
+			// Target
+			setOnDragEntered(event -> {
+				System.out.println("Drag entered");
+					// destacar algo
+				event.consume();
+			});
+			setOnDragOver(evt -> {
+				System.out.println("Drag over");
+				if(evt.getSource() != Block.this) {
+					evt.acceptTransferModes(TransferMode.ANY);
+					DropShadow dropShadow = new DropShadow();
+					dropShadow.setRadius(5.0);
+					dropShadow.setOffsetX(3.0);
+					dropShadow.setOffsetY(3.0);
+					dropShadow.setColor(Color.color(0.4, 0.5, 0.5));
+					setEffect(dropShadow);
+				}
+				//evt.consume();
+			});
+			setOnDragExited(evt -> {
+				System.out.println("Drag exited");
+				if(evt.getSource() != Block.this) {
+					// reverter borda
+					setEffect(null);
+				}
+				evt.consume();
+			});
+			setOnDragDropped(evt -> {
+				System.out.println("Drag dropped");
+				evt.setDropCompleted(true);
+				evt.consume();
+			});
+			setOnDragDone(evt -> {
+				System.out.println("Drag done");
+				evt.consume();
+			});
+
 			// ativa o cache para renderizar mais rápido
 			setCache(true);
 		}
@@ -131,6 +179,10 @@ public abstract class Block extends Parent {
 
 	public void setConnectionHeight(float connectionHeight) {
 		this.connectionHeight = connectionHeight;
+	}
+
+	public double getMinX() {
+		return minX;
 	}
 
 	public void setMinX(double minX) {
@@ -217,8 +269,12 @@ public abstract class Block extends Parent {
 		return triangle;
 	}
 
-	public double getMinX() {
-		return minX;
-	}
+	private ChangeListener changeListener = new ChangeListener<Parent>() {
+		@Override
+		public void changed(ObservableValue<? extends Parent> ov, Parent oldP, Parent newP) {
+			root = newP;
+		}
+	};
+
 
 }

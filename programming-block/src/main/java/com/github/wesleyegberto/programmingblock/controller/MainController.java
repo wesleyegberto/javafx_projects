@@ -36,6 +36,7 @@ public class MainController {
 		logger.debug("init");
 
 		initializeDragEventsTarget();
+
 		Block[] defaultCommands = {
 			new CommandBlock("/images/comando_avancar_fundo.png", "viraEsquerda()", 200f, 100f, true),
 			new CommandBlock("/images/comando_recuar_fundo.png", "viraEsquerda()", 200f, 100f, true)
@@ -45,7 +46,7 @@ public class MainController {
 			command.setOnMouseDragged(evt -> {
 				//logger.debug("Mouse dragged event from toolbox");
 				// Dispara o evento para o bloco recém criado
-				MouseEvent mouseEvent = evt.copyFor(lastCreatedBlock, lastCreatedBlock.getBackground());
+				MouseEvent mouseEvent = evt.copyFor(lastCreatedBlock, lastCreatedBlock);
 				lastCreatedBlock.fireEvent(mouseEvent);
 				evt.consume();
 			});
@@ -56,7 +57,7 @@ public class MainController {
 				lastCreatedBlock = sourceBlock.cloneBlock();
 
 				// Dispara o evento para o bloco recém criado
-				MouseEvent mouseEvent = evt.copyFor(lastCreatedBlock.getBackground(), lastCreatedBlock.getBackground());
+				MouseEvent mouseEvent = evt.copyFor(lastCreatedBlock, lastCreatedBlock);
 				lastCreatedBlock.fireEvent(mouseEvent);
 
 				// Seta a localização atual
@@ -65,9 +66,14 @@ public class MainController {
 				lastCreatedBlock.setDragAnchor(evt.getSceneX(), evt.getSceneY());
 
 				((BorderPane) scene.getRoot()).getChildren().add(lastCreatedBlock);
-				evt.setDragDetect(false);
+				//boxCode.getChildren().add(lastCreatedBlock);
 				evt.consume();
-
+			});
+			command.setOnDragDetected(evt -> {
+				// Dispara o evento para o bloco recém criado
+				MouseEvent mouseEvent = evt.copyFor(lastCreatedBlock, lastCreatedBlock);
+				lastCreatedBlock.fireEvent(mouseEvent);
+				evt.consume();
 			});
 			commandToolbox.getChildren().add(command);
 		}
@@ -80,14 +86,15 @@ public class MainController {
 	private void initializeDragEventsTarget() {
 		// Target
 		paneCode.setOnDragEntered(event -> {
-			if (event.getGestureSource() != paneCode && event.getDragboard().hasString()) {
+			logger.debug("Drag entered");
+			if (lastCreatedBlock != null) {
 				// destacar algo
-				logger.debug("Drag entered");
 			}
 			event.consume();
 		});
 		paneCode.setOnDragOver(evt -> {
-			if (evt.getGestureSource() != paneCode && evt.getDragboard().hasString()) {
+			logger.debug("Drag over");
+			if (lastCreatedBlock != null) {
 				evt.acceptTransferModes(TransferMode.MOVE);
 			}
 			evt.consume();
@@ -98,10 +105,11 @@ public class MainController {
 			evt.consume();
 		});
 		paneCode.setOnDragDropped(evt -> {
-			logger.debug("Drag dropper");
+			logger.debug("Drag dropped");
 			boolean success = false;
 			if(evt.getGestureSource() != null && evt.getGestureSource() == lastCreatedBlock && !boxCode.getChildren().contains(lastCreatedBlock)) {
 				logger.debug("Gesture source: " + evt.getGestureSource());
+				((BorderPane) scene.getRoot()).getChildren().remove(lastCreatedBlock);
 				boxCode.getChildren().add(lastCreatedBlock);
 				success = true;
 			}
@@ -110,6 +118,7 @@ public class MainController {
 			lastCreatedBlock = null;
 		});
 		paneCode.setOnDragDone(evt -> {
+			logger.debug("Drag done");
 			if (evt.getTransferMode() == TransferMode.MOVE) {
 				logger.debug("[OnDragDone] Drag done!");
 			}
