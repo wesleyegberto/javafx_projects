@@ -19,7 +19,6 @@ public class Main extends Application {
 		FXMLLoader loader = new FXMLLoader();
 		Parent rootNode = loader.load(getClass().getResourceAsStream(fxmlFile));
 		MainController controller = loader.getController();
-
 		Scene scene = new Scene(rootNode);
 
 		controller.setScene(scene);

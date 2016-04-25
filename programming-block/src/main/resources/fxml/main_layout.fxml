@@ -5,29 +5,33 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.wesleyegberto.programmingblock.controller.MainController">
-   <padding>
-      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-   </padding>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.wesleyegberto.programmingblock.controller.MainController">
    <left>
-      <ScrollPane minHeight="710.0" prefWidth="210.0" maxWidth="210.0" BorderPane.alignment="CENTER">
+      <ScrollPane maxWidth="430.0" minHeight="710.0" prefWidth="430.0" BorderPane.alignment="CENTER">
          <content>
-            <VBox fx:id="commandToolbox" prefWidth="200.0">
+            <VBox fx:id="commandToolbox" maxWidth="410.0" prefWidth="410.0">
                 <children>
                 </children>
             </VBox>
          </content>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
       </ScrollPane>
    </left>
    <center>
-      <ScrollPane BorderPane.alignment="CENTER">
+      <ScrollPane fx:id="paneCode" BorderPane.alignment="CENTER">
          <content>
-             <Pane fx:id="paneCode">
-                <VBox fx:id="boxCode" minHeight="777.0" minWidth="665.0">
-                   <children>
-                </children>
-                </VBox>
-             </Pane>
+            <VBox fx:id="boxCode" minHeight="775.0" minWidth="600.0">
+               <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <children>
+               </children>
+            </VBox>
          </content>
       </ScrollPane>
    </center>
