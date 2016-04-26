@@ -5,8 +5,8 @@ public class MovementCommandBlockBuilder {
 	private String textImage;
 	private String commandName;
 	private String code;
-	private double width = 400.0;
-	private double height = 80.0;
+	private double width = Constants.BLOCK_WIDTH;
+	private double height = Constants.BLOCK_HEIGHT;
 	private boolean isTemplate;
 	private boolean hasParameter = false;
 	private double fromX;
@@ -62,7 +62,7 @@ public class MovementCommandBlockBuilder {
 		CommandBlock block = new CommandBlock(backgroundImage, textImage, commandName, code, width, height, isTemplate, hasParameter);
 		block.setStartTranslation(fromX);
 		block.setEndTranslation(toX);
-		block.createAnimation();
+		block.createHorizontalAnimation();
 		return block;
 	}
 }

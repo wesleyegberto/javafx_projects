@@ -8,4 +8,9 @@ public class Constants {
 
 	public static final String PARAM_IMAGE = "/images/param_comando.png";
 	public static final String TANK_IMAGE = "/images/tank.png";
+
+	// Constantes dos blocos
+	public static final double BLOCK_WIDTH = 400d;
+	public static final double BLOCK_HEIGHT = 80d;
+
 }

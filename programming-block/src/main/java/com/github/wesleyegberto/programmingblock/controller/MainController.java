@@ -1,26 +1,28 @@
 package com.github.wesleyegberto.programmingblock.controller;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import com.github.wesleyegberto.programmingblock.component.*;
-import com.github.wesleyegberto.programmingblock.component.util.Clipboard;
-import javafx.fxml.Initializable;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.Priority;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.github.wesleyegberto.programmingblock.component.util.Clipboard;
+
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 /**
  * @author Wesley Egberto on 21/04/16.
@@ -55,15 +57,17 @@ public class MainController implements Initializable {
 		paneCode.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
 		VBox.setVgrow(paneCode, Priority.ALWAYS);
 
-		initializeDragEventsTarget();
+		// Criação do bloco principal
+		ProgramBlock programBlock = ProgramBlock.createBuilder()
+				.setHeaderBackgroundImage("/images/programa/header_programa.png")
+				.setLeftBackgroundImage("/images/programa/left_bar_programa.png")
+				.setFooterBackgroundImage("/images/programa/footer_programa.png")
+				.setTextImagePath("/images/texto_programa.png")
+				.setIsTemplate(true).build();
+		boxCode.getChildren().add(programBlock);
 
-		boxCode.getChildren().add(ProgramBlock.createBuilder()
-					.setHeaderBackgroundImage("/images/programa/header_programa.png")
-					.setLeftBackgroundImage("/images/programa/left_bar_programa.png")
-					.setFooterBackgroundImage("/images/programa/footer_programa.png")
-					.setTextImagePath("/images/texto_programa.png").setWidth(400).setHeight(80)
-					.setIsTemplate(true).build());
-
+		initializeDragEventsTarget(programBlock.getPaneCode(), programBlock.getBoxCode());
+		
 		Block[] defaultCommands = {
 			new MovementCommandBlockBuilder().setTextImage("/images/texto_avancar.png")
 				.setCommandName("AVANÇAR").setCode("avancar(:param)").setTranslationX(0, 100)
@@ -71,7 +75,10 @@ public class MainController implements Initializable {
 			new MovementCommandBlockBuilder().setTextImage("/images/texto_recuar.png")
 				.setCommandName("RECUAR").setCode("recuar(:param)").setTranslationX(100, 0)
 				.setHasParameter(true).setIsTemplate(true).build(),
+
 			ValueParamBlock.createBuilder().setBackgroundImage("/images/param_value.png").setTemplate(true).build(),
+			FunctionParamBlock.createBuilder().setBackgroundImage("/images/funcao_medir_distancia.png").setTemplate(true).build(),
+
 			new IfBlock("/images/estrutura_se_fundo_header_p1.png", "/images/estrutura_se_fundo_header_p2.png",
 				"/images/estrutura_se_fundo_header_p3.png", "if(){}", 200, 80, true)
 		};
@@ -84,23 +91,26 @@ public class MainController implements Initializable {
 		}
 	}
 
-	private void initializeDragEventsTarget() {
-		paneCode.setOnMouseDragEntered(evt -> {
-			paneCode.setStyle("-fx-border-color:red;-fx-border-width:2;-fx-border-style:solid;");
+	private void initializeDragEventsTarget(final Region droppablePane, final VBox droppableArea) {
+		droppablePane.setOnMouseDragEntered(evt -> {
+			//logger.debug("Program block entered");
+			droppableArea.setStyle("-fx-border-color:red;-fx-border-width:2;-fx-border-style:solid;");
 			evt.consume();
 		});
-		paneCode.setOnMouseDragExited(evt -> {
-			paneCode.setStyle("-fx-border-style:none;");
+		droppablePane.setOnMouseDragExited(evt -> {
+			//logger.debug("Program block exited");
+			droppableArea.setStyle("-fx-border-style:none;");
 			evt.consume();
 		});
-		paneCode.setOnMouseDragReleased(evt -> {
+		droppablePane.setOnMouseDragReleased(evt -> {
+			logger.debug("Program block mouse drag released");
 			if(!clipboard.hasValue() || !clipboard.getValue().isTemplate()) {
 				return;
 			}
 			if(clipboard.getValue() instanceof CommandBlock || clipboard.getValue() instanceof FluxControlBlock) {
 				logger.debug("Mouse Drag Released - " + clipboard.getValue());
 				Block newBlock = cloneBlockFromToolbox(evt);
-				boxCode.getChildren().add(newBlock);
+				droppableArea.getChildren().add(newBlock);
 				clipboard.clear();
 				evt.consume();
 			}
@@ -189,19 +199,22 @@ public class MainController implements Initializable {
 				if(newBlock.isTemplate()) { // Cria bloco a partir do template
 					newBlock = cloneBlockFromToolbox(evt);
 				} else { // Já está criado, apenas move
-					VBox parent =  (VBox) newBlock.getParent();
 					// Retira e coloca o item após o item em que foi droppado
-					parent.getChildren().remove(newBlock);
+					VBox parentSource = (VBox) newBlock.getParent();
+					parentSource.getChildren().remove(newBlock);
 				}
 				sceneRoot.getChildren().remove(dragImageView);
 
 				// TODO: Quando o bloco for um Controle de Fluxo deve-se inserir dentro dele
 				if(block instanceof CommandBlock) {
-					int index = boxCode.getChildren().indexOf(block);
+					VBox parentTarget = (VBox) block.getParent();
+					int index = parentTarget.getChildren().indexOf(block);
 					System.out.println("\tDropped at: " + index);
-					boxCode.getChildren().add(index + 1, newBlock);
-				} else if(block instanceof FluxControlBlock) {
-
+					parentTarget.getChildren().add(index + 1, newBlock);
+					
+				} else if(block instanceof ProgramBlock) {
+					VBox parentTarget = ((ProgramBlock) block).getBoxCode();
+					parentTarget.getChildren().add(newBlock);
 				}
 				// faz com que o bloco pare de ignorar MouseEvents
 				newBlock.setMouseTransparent(false);

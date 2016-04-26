@@ -135,7 +135,7 @@ public class CommandBlock extends Block {
 		return "CommandBlock [id=" + id + ", hashCode=" + hashCode() + "]";
 	}
 
-	public void createAnimation() {
+	public void createHorizontalAnimation() {
 		imgTank.setTranslateX(startTranslation);
 		// Prepara a animação
 		final Timeline timeline = new Timeline();

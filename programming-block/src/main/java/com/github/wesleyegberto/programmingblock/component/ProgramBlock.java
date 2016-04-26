@@ -1,9 +1,14 @@
 package com.github.wesleyegberto.programmingblock.component;
 
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
@@ -11,13 +16,9 @@ import javafx.scene.shape.Shape;
  * @author Wesley Egberto on 25/04/16.
  */
 public class ProgramBlock extends FluxControlBlock {
-
-	private BorderPane layout = new BorderPane();
 	private String textImagePath;
 	private String leftBackgroundImage;
 	private String footerBackgroundImage;
-
-	private static final double LEFT_BAR_WIDTH = 20d;
 
 	public ProgramBlock(String backgroundHeaderImage, String leftBackgroundImage, String footerBackgroundImage,
 						String textImagePath, double width, double height, boolean isTemplate) {
@@ -33,40 +34,51 @@ public class ProgramBlock extends FluxControlBlock {
 
 	@Override
 	protected void createBlock() {
+		setCursor(Cursor.DEFAULT);
 		// Layout para os componentes interno
+		layout = new BorderPane();
 		layout.setMinWidth(getWidth());
 		getChildren().add(layout);
 
-		final Rectangle rect = createRectangle(0, 0, getWidth(), getHeight());
-		rect.setArcHeight(0d);
-		rect.setArcWidth(0d);
-
 		// Header
-		Shape blockClip = Shape.union(rect, createTriangleToAdd(connectionLeftPad));
-		background.setClip(blockClip);
+		Shape shapeToClip = createHeaderShape();
+		background.setClip(shapeToClip);
 		background.setFitWidth(getWidth());
-		background.setFitHeight(getHeight() + 16f);
+		background.setFitHeight(getHeight() + 16d);
 
 		StackPane header = new StackPane();
+		header.setAlignment(Pos.CENTER_LEFT);
+		setPrefSize(getWidth(), getHeight());
+		setMaxSize(getWidth(), getHeight());
 		header.getChildren().add(background);
-
 		ImageView imgTexto = new ImageView(new Image(getClass().getResourceAsStream(textImagePath)));
 		header.getChildren().add(imgTexto);
 
 		layout.setTop(header);
 
+		// Center
+		boxCode = new VBox(0.0);
+		paneCode = new ScrollPane(boxCode);
+		//paneCode.setStyle("-fx-background: #AAAAAA;");
+		paneCode.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+		VBox.setVgrow(paneCode, Priority.ALWAYS);
+		
+		layout.setCenter(paneCode);
+		
 		// Left
 		Image leftBackgroundImage = new Image(getClass().getResourceAsStream(this.leftBackgroundImage));
 		ImageView leftBackground = new ImageView(leftBackgroundImage);
-		leftBackground.setFitHeight(getHeight());
+		leftBackground.fitHeightProperty().bind(paneCode.heightProperty()); 
 		leftBackground.setFitWidth(LEFT_BAR_WIDTH);
 		layout.setLeft(leftBackground);
 
 		// Footer
+		// Forma do footer
+		shapeToClip = createFooterShape();
+		// Componentes do footer
 		Image backgroundImage = new Image(getClass().getResourceAsStream(footerBackgroundImage));
 		ImageView footerBackground = new ImageView(backgroundImage);
-		blockClip = Shape.subtract(rect, createTriangleToRemove(connectionLeftPad));
-		footerBackground.setClip(blockClip);
+		footerBackground.setClip(shapeToClip);
 		footerBackground.setFitWidth(getWidth());
 		footerBackground.setFitHeight(getHeight());
 		layout.setBottom(footerBackground);
@@ -94,8 +106,8 @@ public class ProgramBlock extends FluxControlBlock {
 		private String leftBackgroundImage;
 		private String footerBackgroundImage;
 		private String textImagePath;
-		private double width;
-		private double height;
+		private double width = Constants.BLOCK_WIDTH;
+		private double height = Constants.BLOCK_HEIGHT;
 		private boolean isTemplate;
 
 		public ProgramBlockBuilder setHeaderBackgroundImage(String headerBackgroundImage) {
