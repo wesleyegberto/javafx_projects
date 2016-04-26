@@ -44,7 +44,6 @@ public abstract class Block extends Region {
 		setHeight(height);
 		setMinSize(width, height);
 		setPrefSize(width, height);
-		setMaxSize(width, height);
 		setCursor(Cursor.HAND);
 
 		// carrega o fundo do bloco

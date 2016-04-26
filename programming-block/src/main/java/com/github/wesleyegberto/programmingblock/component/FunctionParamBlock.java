@@ -1,14 +1,13 @@
 package com.github.wesleyegberto.programmingblock.component;
 
 import javafx.scene.Cursor;
-import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Shape;
 
 /**
  * @author Wesley Egberto on 24/04/16.
  */
-public class FunctionParamBlock extends ParamBlock {
+public class FunctionParamBlock extends OperandBlock {
 	private Object value;
 
 	public FunctionParamBlock(String backgroundImage, double width, double height, boolean isTemplate) {

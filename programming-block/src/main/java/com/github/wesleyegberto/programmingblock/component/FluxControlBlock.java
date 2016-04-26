@@ -1,5 +1,6 @@
 package com.github.wesleyegberto.programmingblock.component;
 
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -14,8 +15,10 @@ import java.util.List;
  */
 public abstract class FluxControlBlock extends Block {
 
+	protected static final double LEFT_BAR_MIN_HEIGHT = 80d;
 	protected static final double LEFT_BAR_WIDTH = 20d;
 
+	protected ReadOnlyDoubleProperty realHeightProperty;
 	protected BorderPane layout;
 	protected ScrollPane paneCode;
 	protected VBox boxCode;

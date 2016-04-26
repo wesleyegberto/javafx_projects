@@ -69,6 +69,7 @@ public class MainController implements Initializable {
 		initializeDragEventsTarget(programBlock.getPaneCode(), programBlock.getBoxCode());
 		
 		Block[] defaultCommands = {
+			// Comandos
 			new MovementCommandBlockBuilder().setTextImage("/images/texto_avancar.png")
 				.setCommandName("AVANÇAR").setCode("avancar(:param)").setTranslationX(0, 100)
 				.setHasParameter(true).setIsTemplate(true).build(),
@@ -76,16 +77,33 @@ public class MainController implements Initializable {
 				.setCommandName("RECUAR").setCode("recuar(:param)").setTranslationX(100, 0)
 				.setHasParameter(true).setIsTemplate(true).build(),
 
+			// Parâmetros
 			ValueParamBlock.createBuilder().setBackgroundImage("/images/param_value.png").setTemplate(true).build(),
+
+			// Operandos de If, For e While
 			FunctionParamBlock.createBuilder().setBackgroundImage("/images/funcao_medir_distancia.png").setTemplate(true).build(),
 
-			new IfBlock("/images/estrutura_se_fundo_header_p1.png", "/images/estrutura_se_fundo_header_p2.png",
-				"/images/estrutura_se_fundo_header_p3.png", "if(){}", 200, 80, true)
+			// Estrutura de controle
+			IfBlock.createBuilder()
+				.setHeaderBackground("/images/controle_fluxo/header.png")
+				.setLeftBarBackground("/images/controle_fluxo/left_bar.png")
+				.setFooterBackground("/images/controle_fluxo/footer.png")
+				.setTextIfImage("/images/controle_fluxo/se.png")
+				.setTextThenImage("/images/controle_fluxo/entao.png")
+				.setOperandImage("/images/controle_fluxo/operand.png")
+				.setTemplate(true)
+				.build()
 		};
 		
 		
 		for (Block command : defaultCommands) {
-			addGestureForStaticBlock(command);
+			if(command instanceof FluxControlBlock) {
+				FluxControlBlock fluxControlBlock = (FluxControlBlock) command;
+				addGestureForStaticBlock(command);
+				//initializeDragEventsTarget(fluxControlBlock.getPaneCode(), fluxControlBlock.getBoxCode());
+			} else {
+				addGestureForStaticBlock(command);
+			}
 			System.out.println(command);
 			commandToolbox.getChildren().add(command);
 		}

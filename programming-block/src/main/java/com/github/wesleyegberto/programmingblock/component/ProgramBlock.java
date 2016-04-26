@@ -9,14 +9,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 /**
  * @author Wesley Egberto on 25/04/16.
  */
 public class ProgramBlock extends FluxControlBlock {
-	private String textImagePath;
+	private String textProgramImage;
 	private String leftBackgroundImage;
 	private String footerBackgroundImage;
 
@@ -25,7 +24,7 @@ public class ProgramBlock extends FluxControlBlock {
 		super(backgroundHeaderImage, null, width, height, isTemplate);
 		this.leftBackgroundImage = leftBackgroundImage;
 		this.footerBackgroundImage = footerBackgroundImage;
-		this.textImagePath = textImagePath;
+		this.textProgramImage = textImagePath;
 
 		connectionLeftPad = connectionLeftPad + LEFT_BAR_WIDTH;
 
@@ -51,33 +50,30 @@ public class ProgramBlock extends FluxControlBlock {
 		setPrefSize(getWidth(), getHeight());
 		setMaxSize(getWidth(), getHeight());
 		header.getChildren().add(background);
-		ImageView imgTexto = new ImageView(new Image(getClass().getResourceAsStream(textImagePath)));
-		header.getChildren().add(imgTexto);
+		ImageView textProgramImage = new ImageView(new Image(getClass().getResourceAsStream(this.textProgramImage)));
+		header.getChildren().add(textProgramImage);
 
 		layout.setTop(header);
 
 		// Center
 		boxCode = new VBox(0.0);
+		boxCode.setMinHeight(LEFT_BAR_MIN_HEIGHT);
 		paneCode = new ScrollPane(boxCode);
-		//paneCode.setStyle("-fx-background: #AAAAAA;");
 		paneCode.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+		realHeightProperty = paneCode.heightProperty();
 		VBox.setVgrow(paneCode, Priority.ALWAYS);
 		
 		layout.setCenter(paneCode);
 		
 		// Left
-		Image leftBackgroundImage = new Image(getClass().getResourceAsStream(this.leftBackgroundImage));
-		ImageView leftBackground = new ImageView(leftBackgroundImage);
-		leftBackground.fitHeightProperty().bind(paneCode.heightProperty()); 
+		ImageView leftBackground = new ImageView(new Image(getClass().getResourceAsStream(this.leftBackgroundImage)));
+		leftBackground.fitHeightProperty().bind(realHeightProperty);
 		leftBackground.setFitWidth(LEFT_BAR_WIDTH);
 		layout.setLeft(leftBackground);
 
 		// Footer
-		// Forma do footer
 		shapeToClip = createFooterShape();
-		// Componentes do footer
-		Image backgroundImage = new Image(getClass().getResourceAsStream(footerBackgroundImage));
-		ImageView footerBackground = new ImageView(backgroundImage);
+		ImageView footerBackground = new ImageView(new Image(getClass().getResourceAsStream(footerBackgroundImage)));
 		footerBackground.setClip(shapeToClip);
 		footerBackground.setFitWidth(getWidth());
 		footerBackground.setFitHeight(getHeight());

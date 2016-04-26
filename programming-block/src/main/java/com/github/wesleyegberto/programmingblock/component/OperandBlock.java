@@ -3,11 +3,11 @@ package com.github.wesleyegberto.programmingblock.component;
 /**
  * @author Wesley Egberto on 21/04/16.
  */
-public abstract class ParamBlock extends OperandBlock {
+public abstract class OperandBlock extends Block {
 
 	private Object value;
 
-	public ParamBlock(String backgroundImage, String code, double width, double height, boolean isTemplate) {
+	public OperandBlock(String backgroundImage, String code, double width, double height, boolean isTemplate) {
 		super(backgroundImage, code, width, height, isTemplate);
 	}
 
