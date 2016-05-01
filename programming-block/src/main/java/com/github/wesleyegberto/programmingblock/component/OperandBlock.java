@@ -9,6 +9,7 @@ public abstract class OperandBlock extends Block {
 
 	public OperandBlock(String backgroundImage, String code, double width, double height, boolean isTemplate) {
 		super(backgroundImage, code, width, height, isTemplate);
+		setMaxSize(width, height);
 	}
 
 	public void setValue(Object value) {
