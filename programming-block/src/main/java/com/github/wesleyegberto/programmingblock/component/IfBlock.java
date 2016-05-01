@@ -2,7 +2,6 @@ package com.github.wesleyegberto.programmingblock.component;
 
 import com.github.wesleyegberto.programmingblock.component.util.Clipboard;
 import javafx.scene.Cursor;
-import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -53,6 +52,7 @@ public class IfBlock extends FluxControlBlock {
 		// Layout para os componentes interno
 		layout = new BorderPane();
 		layout.setMinWidth(getWidth());
+//		layout.setMinHeight(getHeight() * 3);
 		getChildren().add(layout);
 
 		// Header
@@ -62,6 +62,7 @@ public class IfBlock extends FluxControlBlock {
 		background.setFitHeight(getHeight() + 16d);
 
 		StackPane headerBackgroundPane = new StackPane();
+		headerBackgroundPane.setMaxHeight(getHeight() + 16d);
 		headerBackgroundPane.setMinSize(0, 0);
 		headerBackgroundPane.getChildren().add(background);
 
@@ -106,16 +107,16 @@ public class IfBlock extends FluxControlBlock {
 
 		// Center
 		boxCode = new VBox(0.0);
-		boxCode.setPrefHeight(LEFT_BAR_MIN_HEIGHT);
+		boxCode.setMinHeight(LEFT_BAR_MIN_HEIGHT);
 		paneCode = new ScrollPane(boxCode);
-		realHeightProperty = paneCode.heightProperty();
 		paneCode.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+		realHeightProperty = paneCode.heightProperty();
 		VBox.setVgrow(paneCode, Priority.ALWAYS);
 
 		layout.setCenter(paneCode);
 
 		// Left
-		ImageView leftBackground = new ImageView(new Image(getClass().getResourceAsStream(this.leftBarBackgroundImage)));
+		ImageView leftBackground = new ImageView(new Image(getClass().getResourceAsStream(leftBarBackgroundImage)));
 		leftBackground.fitHeightProperty().bind(realHeightProperty);
 		leftBackground.setFitWidth(LEFT_BAR_WIDTH);
 		layout.setLeft(leftBackground);
@@ -125,8 +126,10 @@ public class IfBlock extends FluxControlBlock {
 		ImageView footerBackground = new ImageView(new Image(getClass().getResourceAsStream(footerBackgroundImage)));
 		footerBackground.setClip(shapeToClip);
 		footerBackground.setFitWidth(getWidth());
-		footerBackground.setFitHeight(getHeight());
+		footerBackground.setFitHeight(getHeight() + 16d);
 		layout.setBottom(footerBackground);
+
+//		layout.heightProperty().addListener((observable, oldValue, newValue) -> updateHight(newValue.doubleValue()));
 	}
 
 	@Override

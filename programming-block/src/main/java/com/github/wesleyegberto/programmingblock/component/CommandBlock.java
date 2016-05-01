@@ -35,6 +35,9 @@ public class CommandBlock extends Block {
 		this.commandName = commandName;
 		this.textImagePath = textImagePath;
 		this.hasParameter = hasParameter;
+
+		setPrefSize(width, height);
+
 		createBlock();
 	}
 
@@ -73,7 +76,7 @@ public class CommandBlock extends Block {
 
 		background.setClip(blockClip);
 		background.setFitWidth(getWidth());
-		background.setFitHeight(getHeight() + 16f);
+		background.setFitHeight(getHeight() + 16d);
 		background.setCursor(Cursor.CLOSED_HAND);
 
 		getChildren().add(background);

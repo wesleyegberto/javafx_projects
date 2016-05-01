@@ -21,12 +21,12 @@ public abstract class Block extends Region {
 	
 	protected String backgroundPath;
 	protected ImageView background;
-	protected Image[] backgroundAnimated;
 	protected String code;
 
 	protected double connectionLeftPad = 50d;
-	protected double connectionWidth = 20;
-	protected double connectionHeight = 10;
+	protected double connectionWidth = 20d;
+	protected double connectionHeight = 10d;
+
 	// Atributos para controle do drag-n-drop
 	protected double startDragX;
 	protected double startDragY;

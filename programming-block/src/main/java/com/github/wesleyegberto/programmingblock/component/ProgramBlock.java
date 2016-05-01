@@ -1,5 +1,7 @@
 package com.github.wesleyegberto.programmingblock.component;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.ScrollPane;
@@ -25,8 +27,6 @@ public class ProgramBlock extends FluxControlBlock {
 		this.leftBackgroundImage = leftBackgroundImage;
 		this.footerBackgroundImage = footerBackgroundImage;
 		this.textProgramImage = textImagePath;
-
-		connectionLeftPad = connectionLeftPad + LEFT_BAR_WIDTH;
 
 		createBlock();
 	}
@@ -66,7 +66,7 @@ public class ProgramBlock extends FluxControlBlock {
 		layout.setCenter(paneCode);
 		
 		// Left
-		ImageView leftBackground = new ImageView(new Image(getClass().getResourceAsStream(this.leftBackgroundImage)));
+		ImageView leftBackground = new ImageView(new Image(getClass().getResourceAsStream(leftBackgroundImage)));
 		leftBackground.fitHeightProperty().bind(realHeightProperty);
 		leftBackground.setFitWidth(LEFT_BAR_WIDTH);
 		layout.setLeft(leftBackground);
@@ -76,8 +76,10 @@ public class ProgramBlock extends FluxControlBlock {
 		ImageView footerBackground = new ImageView(new Image(getClass().getResourceAsStream(footerBackgroundImage)));
 		footerBackground.setClip(shapeToClip);
 		footerBackground.setFitWidth(getWidth());
-		footerBackground.setFitHeight(getHeight());
+		footerBackground.setFitHeight(getHeight() + 16d);
 		layout.setBottom(footerBackground);
+
+//		layout.heightProperty().addListener((observable, oldValue, newValue) -> updateHight(newValue.doubleValue()));
 	}
 
 	@Override

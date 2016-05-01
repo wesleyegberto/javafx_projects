@@ -15,7 +15,7 @@ import java.util.List;
  */
 public abstract class FluxControlBlock extends Block {
 
-	protected static final double LEFT_BAR_MIN_HEIGHT = 80d;
+	protected static final double LEFT_BAR_MIN_HEIGHT = 50d;
 	protected static final double LEFT_BAR_WIDTH = 20d;
 
 	protected ReadOnlyDoubleProperty realHeightProperty;
@@ -28,6 +28,7 @@ public abstract class FluxControlBlock extends Block {
 	
 	public FluxControlBlock(String backgroundImage, String code, double width, double height, boolean isTemplate) {
 		super(backgroundImage, code, width, height, isTemplate);
+		setMinSize(0, 0);
 	}
 
 	public ScrollPane getPaneCode() {
@@ -39,7 +40,27 @@ public abstract class FluxControlBlock extends Block {
 	}
 
 	public void addBlock(Block block) {
+		System.out.println("Dropped at FluxControlBlock");
 		this.listInternalCommands.add(block);
+		boxCode.getChildren().add(block);
+		updateHight(getHeight() + block.getHeight());
+	}
+
+	public void addBlockAfter(Block newBlock, Block block) {
+		int index = boxCode.getChildren().indexOf(block);
+		System.out.println("\tDropped in FluxControlBlock at: " + index);
+		if(index >= 0) {
+			boxCode.getChildren().add(index + 1, newBlock);
+		} else {
+			boxCode.getChildren().add(newBlock);
+		}
+		updateHight(getHeight() + block.getHeight());
+	}
+
+	protected void updateHight(double newHeight) {
+		System.out.println("Updating hight: " + newHeight);
+		setHeight(newHeight);
+		setPrefHeight(newHeight);
 	}
 
 	protected Shape createHeaderShape() {
@@ -48,17 +69,20 @@ public abstract class FluxControlBlock extends Block {
 		rectConnection.setArcHeight(0d);
 		rectConnection.setArcWidth(0d);
 		Shape shapeToClip = Shape.union(createRectangle(0, 0, getWidth(), getHeight()), rectConnection);
-		shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad));
+		shapeToClip = Shape.subtract(shapeToClip, createTriangleToRemove(connectionLeftPad));
+		shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad + LEFT_BAR_WIDTH));
 		return shapeToClip;
 	}
 
 	protected Shape createFooterShape() {
 		// Retângulo com a barra esquerda
-		Rectangle rectConnection = createRectangle(0, 0d - connectionHeight, LEFT_BAR_WIDTH, connectionHeight * 3);
+		Rectangle rectConnection = createRectangle(0, -connectionHeight, LEFT_BAR_WIDTH, connectionHeight * 3);
 		rectConnection.setArcHeight(0d);
 		rectConnection.setArcWidth(0d);
 		Shape shapeToClip = Shape.union(rectConnection, createRectangle(0, 0, getWidth(), getHeight()));
-		shapeToClip = Shape.subtract(shapeToClip, createTriangleToRemove(connectionLeftPad));
+		shapeToClip = Shape.subtract(shapeToClip, createTriangleToRemove(connectionLeftPad + LEFT_BAR_WIDTH));
+		shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad));
 		return shapeToClip;
 	}
+
 }
