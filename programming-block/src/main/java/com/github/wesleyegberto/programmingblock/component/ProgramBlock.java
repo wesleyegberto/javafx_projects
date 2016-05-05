@@ -1,14 +1,11 @@
 package com.github.wesleyegberto.programmingblock.component;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Shape;
@@ -42,13 +39,11 @@ public class ProgramBlock extends FluxControlBlock {
 		// Header
 		Shape shapeToClip = createHeaderShape();
 		background.setClip(shapeToClip);
-		background.setFitWidth(getWidth());
-		background.setFitHeight(getHeight() + 16d);
+		background.setFitWidth(Constants.FLUX_CONTORL_BLOCK_WIDTH);
+		background.setFitHeight(Constants.BLOCK_HEIGHT + 16d);
 
 		StackPane header = new StackPane();
 		header.setAlignment(Pos.CENTER_LEFT);
-		setPrefSize(getWidth(), getHeight());
-		setMaxSize(getWidth(), getHeight());
 		header.getChildren().add(background);
 		ImageView textProgramImage = new ImageView(new Image(getClass().getResourceAsStream(this.textProgramImage)));
 		header.getChildren().add(textProgramImage);
@@ -57,16 +52,17 @@ public class ProgramBlock extends FluxControlBlock {
 
 		// Center
 		boxCode = new VBox(0.0);
-		boxCode.setMinHeight(LEFT_BAR_MIN_HEIGHT);
+		boxCode.setMinSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
+		boxCode.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 		paneCode = new ScrollPane(boxCode);
+		paneCode.setStyle("-fx-background-color:transparent;");
 		paneCode.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		realHeightProperty = paneCode.heightProperty();
-		VBox.setVgrow(paneCode, Priority.ALWAYS);
-		
+
 		layout.setCenter(paneCode);
 		
 		// Left
-		ImageView leftBackground = new ImageView(new Image(getClass().getResourceAsStream(leftBackgroundImage)));
+		leftBackground = new ImageView(new Image(getClass().getResourceAsStream(leftBackgroundImage)));
 		leftBackground.fitHeightProperty().bind(realHeightProperty);
 		leftBackground.setFitWidth(LEFT_BAR_WIDTH);
 		layout.setLeft(leftBackground);
@@ -75,11 +71,9 @@ public class ProgramBlock extends FluxControlBlock {
 		shapeToClip = createFooterShape();
 		ImageView footerBackground = new ImageView(new Image(getClass().getResourceAsStream(footerBackgroundImage)));
 		footerBackground.setClip(shapeToClip);
-		footerBackground.setFitWidth(getWidth());
-		footerBackground.setFitHeight(getHeight() + 16d);
+		footerBackground.setFitWidth(Constants.FLUX_CONTORL_BLOCK_WIDTH);
+		footerBackground.setFitHeight(Constants.BLOCK_HEIGHT + 16d);
 		layout.setBottom(footerBackground);
-
-//		layout.heightProperty().addListener((observable, oldValue, newValue) -> updateHight(newValue.doubleValue()));
 	}
 
 	@Override

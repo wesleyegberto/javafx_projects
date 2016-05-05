@@ -7,7 +7,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.wesleyegberto.programmingblock.controller.MainController">
    <left>
-      <ScrollPane maxWidth="430.0" minHeight="710.0" prefWidth="430.0" BorderPane.alignment="CENTER">
+      <ScrollPane maxWidth="450.0" minHeight="710.0" prefWidth="450.0" BorderPane.alignment="CENTER">
          <content>
             <VBox fx:id="commandToolbox" maxWidth="410.0" prefWidth="410.0">
                 <children>

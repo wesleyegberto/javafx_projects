@@ -40,10 +40,6 @@ public abstract class Block extends Region {
 		this.code = code;
 		this.isTemplate = isTemplate;
 
-		setWidth(width);
-		setHeight(height);
-		setMinSize(width, height);
-		setPrefSize(width, height);
 		setCursor(Cursor.HAND);
 
 		// carrega o fundo do bloco
@@ -96,15 +92,19 @@ public abstract class Block extends Region {
 	/**
 	 * Cria o triângulo que será adicionado no fim do bloco.
 	 */
-	protected Polygon createTriangleToAdd(double startX) {
+	protected Polygon createTriangleToAdd(double startX, double startY) {
 		Polygon triangle = new Polygon();
 		triangle.getPoints().setAll(
-			startX, getHeight(),
-			startX + connectionWidth, getHeight(),
-			startX + connectionWidth / 2d, getHeight() + connectionHeight
+			startX, startY,
+			startX + connectionWidth, startY,
+			startX + connectionWidth / 2d, startY + connectionHeight
 		);
 		triangle.setFill(Color.BLACK);
 		return triangle;
 	}
 
+	@Override
+	public String toString() {
+		return "[" + getClass().getSimpleName() + "{id:" + id + "}" + "]";
+	}
 }

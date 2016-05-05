@@ -1,7 +1,9 @@
 package com.github.wesleyegberto.programmingblock.component;
 
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.scene.control.Control;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
@@ -22,6 +24,7 @@ public abstract class FluxControlBlock extends Block {
 	protected BorderPane layout;
 	protected ScrollPane paneCode;
 	protected VBox boxCode;
+	protected ImageView leftBackground;
 
 	// Lista de comandos internos (quando for um controle de fluxo)
 	protected List<Block> listInternalCommands = new ArrayList<>();
@@ -29,6 +32,7 @@ public abstract class FluxControlBlock extends Block {
 	public FluxControlBlock(String backgroundImage, String code, double width, double height, boolean isTemplate) {
 		super(backgroundImage, code, width, height, isTemplate);
 		setMinSize(0, 0);
+		setMinSize(width, height);
 	}
 
 	public ScrollPane getPaneCode() {
@@ -40,10 +44,9 @@ public abstract class FluxControlBlock extends Block {
 	}
 
 	public void addBlock(Block block) {
-		System.out.println("Dropped at FluxControlBlock");
+		System.out.println("\tDropped at FluxControlBlock");
 		this.listInternalCommands.add(block);
 		boxCode.getChildren().add(block);
-		updateHight(getHeight() + block.getHeight());
 	}
 
 	public void addBlockAfter(Block newBlock, Block block) {
@@ -54,23 +57,22 @@ public abstract class FluxControlBlock extends Block {
 		} else {
 			boxCode.getChildren().add(newBlock);
 		}
-		updateHight(getHeight() + block.getHeight());
 	}
 
-	protected void updateHight(double newHeight) {
-		System.out.println("Updating hight: " + newHeight);
-		setHeight(newHeight);
-		setPrefHeight(newHeight);
+	public void removeBlock(Block block) {
+		System.out.print("Removing " + block + " from " + this + ": ");
+		listInternalCommands.remove(block);
+		System.out.println(boxCode.getChildren().remove(block));
 	}
 
 	protected Shape createHeaderShape() {
 		// Retângulo com a barra esquerda
-		Rectangle rectConnection = createRectangle(0, getHeight() - connectionHeight, LEFT_BAR_WIDTH, connectionHeight * 3);
+		Rectangle rectConnection = createRectangle(0, Constants.BLOCK_HEIGHT - connectionHeight, LEFT_BAR_WIDTH, connectionHeight * 3);
 		rectConnection.setArcHeight(0d);
 		rectConnection.setArcWidth(0d);
-		Shape shapeToClip = Shape.union(createRectangle(0, 0, getWidth(), getHeight()), rectConnection);
+		Shape shapeToClip = Shape.union(createRectangle(0, 0, Constants.FLUX_CONTORL_BLOCK_WIDTH, Constants.BLOCK_HEIGHT), rectConnection);
 		shapeToClip = Shape.subtract(shapeToClip, createTriangleToRemove(connectionLeftPad));
-		shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad + LEFT_BAR_WIDTH));
+		shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad + LEFT_BAR_WIDTH, Constants.BLOCK_HEIGHT));
 		return shapeToClip;
 	}
 
@@ -79,10 +81,9 @@ public abstract class FluxControlBlock extends Block {
 		Rectangle rectConnection = createRectangle(0, -connectionHeight, LEFT_BAR_WIDTH, connectionHeight * 3);
 		rectConnection.setArcHeight(0d);
 		rectConnection.setArcWidth(0d);
-		Shape shapeToClip = Shape.union(rectConnection, createRectangle(0, 0, getWidth(), getHeight()));
+		Shape shapeToClip = Shape.union(rectConnection, createRectangle(0, 0, Constants.FLUX_CONTORL_BLOCK_WIDTH, Constants.BLOCK_HEIGHT));
 		shapeToClip = Shape.subtract(shapeToClip, createTriangleToRemove(connectionLeftPad + LEFT_BAR_WIDTH));
-		shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad));
+		shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad, Constants.BLOCK_HEIGHT));
 		return shapeToClip;
 	}
-
 }

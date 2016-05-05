@@ -1,6 +1,7 @@
 package com.github.wesleyegberto.programmingblock.component;
 
 import com.github.wesleyegberto.programmingblock.component.util.Clipboard;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -36,6 +37,9 @@ public class CommandBlock extends Block {
 		this.textImagePath = textImagePath;
 		this.hasParameter = hasParameter;
 
+		setWidth(width);
+		setHeight(height);
+		setMinSize(width, height);
 		setPrefSize(width, height);
 
 		createBlock();
@@ -70,9 +74,9 @@ public class CommandBlock extends Block {
 
 	@Override
 	protected void createBlock() {
-		Shape blockClip = createRectangle(0, 0, getWidth(), getHeight());
+		Shape blockClip = createRectangle(0, 0, Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
 		blockClip = Shape.subtract(blockClip, createTriangleToRemove(connectionLeftPad));
-		blockClip = Shape.union(blockClip, createTriangleToAdd(connectionLeftPad));
+		blockClip = Shape.union(blockClip, createTriangleToAdd(connectionLeftPad, getHeight()));
 
 		background.setClip(blockClip);
 		background.setFitWidth(getWidth());
@@ -128,14 +132,9 @@ public class CommandBlock extends Block {
 			return;
 		Shape blockNewClip = createRectangle(0, 0, getWidth(), getHeight());
 		blockNewClip = Shape.subtract(blockNewClip, createTriangleToRemove(50d));
-		blockNewClip = Shape.union(blockNewClip, createTriangleToAdd(50d));
+		blockNewClip = Shape.union(blockNewClip, createTriangleToAdd(50d, getHeight()));
 		background.setClip(blockNewClip);
 		background.setFitWidth(getWidth());
-	}
-
-	@Override
-	public String toString() {
-		return "CommandBlock [id=" + id + ", hashCode=" + hashCode() + "]";
 	}
 
 	public void createHorizontalAnimation() {

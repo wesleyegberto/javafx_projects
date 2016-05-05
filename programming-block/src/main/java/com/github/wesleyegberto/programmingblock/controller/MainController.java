@@ -119,12 +119,11 @@ public class MainController implements Initializable {
 			evt.consume();
 		});
 		droppablePane.setOnMouseDragReleased(evt -> {
-			logger.debug("Program block mouse drag released");
 			if(!clipboard.hasValue() || !clipboard.getValue().isTemplate()) {
 				return;
 			}
 			if(clipboard.getValue() instanceof CommandBlock || clipboard.getValue() instanceof FluxControlBlock) {
-				logger.debug("Mouse Drag Released - " + clipboard.getValue());
+				logger.debug(clipboard.getValue() + " was released at " + block);
 				Block newBlock = cloneBlockFromToolbox(evt);
 				block.addBlock(newBlock);
 				clipboard.clear();
@@ -135,6 +134,8 @@ public class MainController implements Initializable {
 
 	private void addEventsForDraggableBlock(final Block block) {
 		block.setOnDragDetected(evt -> {
+			logger.debug(block + " started been dragged");
+			clipboard.setValue(block);
 			SnapshotParameters snapParams = new SnapshotParameters();
 			snapParams.setFill(Color.TRANSPARENT);
 			dragImageView.setImage(block.snapshot(snapParams, null));
@@ -152,7 +153,7 @@ public class MainController implements Initializable {
 		});
 		block.setOnMousePressed(evt -> {
 			//logger.debug("Mouse Released from " + dragItem);
-			clipboard.setValue(block);
+			//clipboard.setValue(block);
 			dragImageView.setMouseTransparent(true);
 			block.setMouseTransparent(true);
 			block.setCursor(Cursor.CLOSED_HAND);
@@ -171,7 +172,7 @@ public class MainController implements Initializable {
 		// Events as a target
 		block.setOnMouseDragEntered(evt -> {
 			//logger.debug("Mouse entered: " + block);
-			block.setStyle("-fx-border-color:red;-fx-border-width:2;-fx-border-style:solid;");
+			block.setStyle("-fx-border-color:red;-fx-border-width:1;-fx-border-style:solid;");
 			evt.consume();
 		});
 		block.setOnMouseDragExited(evt -> {
@@ -182,29 +183,35 @@ public class MainController implements Initializable {
 			if(!clipboard.hasValue())
 				return;
 			if(clipboard.getValue() instanceof CommandBlock || clipboard.getValue() instanceof FluxControlBlock) {
-				//logger.debug("Mouse Drag Released " + dragItem + " on Block - " + block);
+				logger.debug("Item " + clipboard.getValue() + " released at " + block);
 				Block newBlock = clipboard.getValue();
+
 				if(newBlock.isTemplate()) { // Cria bloco a partir do template
 					newBlock = cloneBlockFromToolbox(evt);
 				} else { // Já está criado, apenas move
 					// Retira e coloca o item após o item em que foi droppado
-					VBox parentSource = (VBox) newBlock.getParent();
-					parentSource.getChildren().remove(newBlock);
+					FluxControlBlock sourceParent = getParenteBlock(clipboard.getValue());
+					if(sourceParent != null) {
+						sourceParent.removeBlock(newBlock);
+					} else {
+						VBox parentSource = (VBox) newBlock.getParent();
+						parentSource.getChildren().remove(newBlock);
+					}
 				}
-				sceneRoot.getChildren().remove(dragImageView);
 				// Adiciona no target
-				FluxControlBlock parenteBlock = getParenteBlock(block.getParent());
-				if(parenteBlock == null) {
+				FluxControlBlock parentBlock = getParenteBlock(block.getParent());
+				if(parentBlock == null) {
 					VBox parentTarget = (VBox) block.getParent();
 					int index = parentTarget.getChildren().indexOf(block);
 					System.out.println("\tDropped in VBox at: " + index);
 					parentTarget.getChildren().add(index + 1, newBlock);
 				} else {
-					parenteBlock.addBlockAfter(newBlock, block);
+					parentBlock.addBlockAfter(newBlock, block);
 				}
 				// faz com que o bloco pare de ignorar MouseEvents
 				newBlock.setMouseTransparent(false);
 				clipboard.clear();
+				sceneRoot.getChildren().remove(dragImageView);
 				evt.consume();
 			}
 		});
@@ -224,8 +231,9 @@ public class MainController implements Initializable {
 		newBlock.setDragAnchor(evt.getSceneX(), evt.getSceneY());
 		addEventsForDraggableBlock(newBlock);
 		addEventsForTargetBlock(newBlock);
-		if(newBlock instanceof FluxControlBlock) {
+		if (newBlock instanceof FluxControlBlock) {
 			initializeDragEventsTarget((FluxControlBlock) newBlock);
+		} else {
 		}
 		return newBlock;
 	}

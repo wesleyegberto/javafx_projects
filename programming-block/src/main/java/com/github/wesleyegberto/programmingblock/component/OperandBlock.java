@@ -10,6 +10,10 @@ public abstract class OperandBlock extends Block {
 	public OperandBlock(String backgroundImage, String code, double width, double height, boolean isTemplate) {
 		super(backgroundImage, code, width, height, isTemplate);
 
+		setWidth(width);
+		setHeight(height);
+		setMinSize(width, height);
+		setPrefSize(width, height);
 		setMaxSize(width, height);
 	}
 
