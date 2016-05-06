@@ -3,8 +3,6 @@ package com.github.wesleyegberto.programmingblock.component;
 import com.github.wesleyegberto.programmingblock.component.util.Clipboard;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.control.Control;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -66,8 +64,8 @@ public class IfBlock extends FluxControlBlock {
 		background.setFitHeight(Constants.BLOCK_HEIGHT + 16d);
 
 		StackPane headerBackgroundPane = new StackPane();
-		headerBackgroundPane.setAlignment(Pos.CENTER_LEFT);
 		headerBackgroundPane.setMinSize(0, 0);
+		headerBackgroundPane.setAlignment(Pos.CENTER_LEFT);
 		headerBackgroundPane.setMaxHeight(Constants.BLOCK_HEIGHT + 16d);
 		headerBackgroundPane.getChildren().add(background);
 
@@ -113,29 +111,13 @@ public class IfBlock extends FluxControlBlock {
 		// Center
 		boxCode = new VBox(0.0);
 		boxCode.setMinSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
-
-		//paneCode = new ScrollPane(boxCode);
-		//paneCode.setMinSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
-		//paneCode.setStyle("-fx-background-color:transparent;");
-		//paneCode.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		//realHeightProperty = paneCode.heightProperty();
-
 		layout.setCenter(boxCode);
 
 		// Left
-		ImageView leftBackground = new ImageView(new Image(getClass().getResourceAsStream(leftBarBackgroundImage)));
-		leftBackground.setFitWidth(LEFT_BAR_WIDTH);
-		leftBackground.setFitHeight(LEFT_BAR_MIN_HEIGHT);
-		ImageViewPane imagePane = new ImageViewPane(leftBackground);
-		layout.setLeft(imagePane);
+		layout.setLeft(createFooterImageViewPaneFromResource(leftBarBackgroundImage));
 
 		// Footer
-		shapeToClip = createFooterShape();
-		ImageView footerBackground = new ImageView(new Image(getClass().getResourceAsStream(footerBackgroundImage)));
-		footerBackground.setClip(shapeToClip);
-		footerBackground.setFitWidth(Constants.FLUX_CONTORL_BLOCK_WIDTH);
-		footerBackground.setFitHeight(Constants.BLOCK_HEIGHT + 16d);
-		layout.setBottom(footerBackground);
+		layout.setBottom(createFooterFromResource(footerBackgroundImage));
 
 	}
 

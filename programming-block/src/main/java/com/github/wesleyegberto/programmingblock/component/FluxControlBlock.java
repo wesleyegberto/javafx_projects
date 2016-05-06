@@ -2,6 +2,7 @@ package com.github.wesleyegberto.programmingblock.component;
 
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -79,5 +80,21 @@ public abstract class FluxControlBlock extends Block {
 		shapeToClip = Shape.subtract(shapeToClip, createTriangleToRemove(connectionLeftPad + LEFT_BAR_WIDTH));
 		shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad, Constants.BLOCK_HEIGHT));
 		return shapeToClip;
+	}
+
+	protected ImageViewPane createFooterImageViewPaneFromResource(String imageFromResource) {
+		ImageView leftBackground = new ImageView(new Image(getClass().getResourceAsStream(imageFromResource)));
+		leftBackground.setFitWidth(LEFT_BAR_WIDTH);
+		leftBackground.setFitHeight(LEFT_BAR_MIN_HEIGHT);
+		return new ImageViewPane(leftBackground);
+	}
+
+	protected ImageView createFooterFromResource(String imageFromResource) {
+		Shape shapeToClip = createFooterShape();
+		ImageView footerBackground = new ImageView(new Image(getClass().getResourceAsStream(imageFromResource)));
+		footerBackground.setClip(shapeToClip);
+		footerBackground.setFitWidth(Constants.FLUX_CONTORL_BLOCK_WIDTH);
+		footerBackground.setFitHeight(Constants.BLOCK_HEIGHT + 16d);
+		return footerBackground;
 	}
 }
