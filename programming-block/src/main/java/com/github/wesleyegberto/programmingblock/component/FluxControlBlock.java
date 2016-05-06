@@ -1,7 +1,6 @@
 package com.github.wesleyegberto.programmingblock.component;
 
 import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.scene.control.Control;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -17,14 +16,13 @@ import java.util.List;
  */
 public abstract class FluxControlBlock extends Block {
 
-	protected static final double LEFT_BAR_MIN_HEIGHT = 50d;
+	protected static final double LEFT_BAR_MIN_HEIGHT = 80d;
 	protected static final double LEFT_BAR_WIDTH = 20d;
 
 	protected ReadOnlyDoubleProperty realHeightProperty;
 	protected BorderPane layout;
-	protected ScrollPane paneCode;
+	//protected ScrollPane paneCode;
 	protected VBox boxCode;
-	protected ImageView leftBackground;
 
 	// Lista de comandos internos (quando for um controle de fluxo)
 	protected List<Block> listInternalCommands = new ArrayList<>();
@@ -33,10 +31,6 @@ public abstract class FluxControlBlock extends Block {
 		super(backgroundImage, code, width, height, isTemplate);
 		setMinSize(0, 0);
 		setMinSize(width, height);
-	}
-
-	public ScrollPane getPaneCode() {
-		return paneCode;
 	}
 
 	public VBox getBoxCode() {

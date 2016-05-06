@@ -105,20 +105,20 @@ public class MainController implements Initializable {
 	}
 
 	private void initializeDragEventsTarget(final FluxControlBlock block) {
-		final Region droppablePane = block.getPaneCode();
+		//final Region droppablePane = block.getPaneCode();
 		final VBox droppableArea = block.getBoxCode();
 
-		droppablePane.setOnMouseDragEntered(evt -> {
+		droppableArea.setOnMouseDragEntered(evt -> {
 			//logger.debug("Program block entered");
 			droppableArea.setStyle("-fx-border-color:red;-fx-border-width:2;-fx-border-style:solid;");
 			evt.consume();
 		});
-		droppablePane.setOnMouseDragExited(evt -> {
+		droppableArea.setOnMouseDragExited(evt -> {
 			//logger.debug("Program block exited");
 			droppableArea.setStyle("-fx-border-style:none;");
 			evt.consume();
 		});
-		droppablePane.setOnMouseDragReleased(evt -> {
+		droppableArea.setOnMouseDragReleased(evt -> {
 			if(!clipboard.hasValue() || !clipboard.getValue().isTemplate()) {
 				return;
 			}
@@ -190,7 +190,7 @@ public class MainController implements Initializable {
 					newBlock = cloneBlockFromToolbox(evt);
 				} else { // Já está criado, apenas move
 					// Retira e coloca o item após o item em que foi droppado
-					FluxControlBlock sourceParent = getParenteBlock(clipboard.getValue());
+					FluxControlBlock sourceParent = getParenteBlock(clipboard.getValue().getParent());
 					if(sourceParent != null) {
 						sourceParent.removeBlock(newBlock);
 					} else {

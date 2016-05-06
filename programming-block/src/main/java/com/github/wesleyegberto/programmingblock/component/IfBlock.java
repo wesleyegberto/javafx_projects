@@ -107,26 +107,27 @@ public class IfBlock extends FluxControlBlock {
 		textImageView = new ImageView(new Image(getClass().getResourceAsStream(textThenImage)));
 		headerLayout.getChildren().add(textImageView);
 
-		background.fitWidthProperty().bind(headerLayout.widthProperty());
+		//background.fitWidthProperty().bind(headerLayout.widthProperty());
 		layout.setTop(headerBackgroundPane);
 
 		// Center
 		boxCode = new VBox(0.0);
 		boxCode.setMinSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
 
-		paneCode = new ScrollPane(boxCode);
-		paneCode.setMinSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
-		paneCode.setStyle("-fx-background-color:transparent;");
-		paneCode.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		realHeightProperty = paneCode.heightProperty();
+		//paneCode = new ScrollPane(boxCode);
+		//paneCode.setMinSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
+		//paneCode.setStyle("-fx-background-color:transparent;");
+		//paneCode.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+		//realHeightProperty = paneCode.heightProperty();
 
-		layout.setCenter(paneCode);
+		layout.setCenter(boxCode);
 
 		// Left
-		leftBackground = new ImageView(new Image(getClass().getResourceAsStream(leftBarBackgroundImage)));
-		leftBackground.fitHeightProperty().bind(realHeightProperty);
+		ImageView leftBackground = new ImageView(new Image(getClass().getResourceAsStream(leftBarBackgroundImage)));
 		leftBackground.setFitWidth(LEFT_BAR_WIDTH);
-		layout.setLeft(leftBackground);
+		leftBackground.setFitHeight(LEFT_BAR_MIN_HEIGHT);
+		ImageViewPane imagePane = new ImageViewPane(leftBackground);
+		layout.setLeft(imagePane);
 
 		// Footer
 		shapeToClip = createFooterShape();

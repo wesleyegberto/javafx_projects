@@ -54,18 +54,19 @@ public class ProgramBlock extends FluxControlBlock {
 		boxCode = new VBox(0.0);
 		boxCode.setMinSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
 		boxCode.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		paneCode = new ScrollPane(boxCode);
-		paneCode.setStyle("-fx-background-color:transparent;");
-		paneCode.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		realHeightProperty = paneCode.heightProperty();
+		//paneCode = new ScrollPane(boxCode);
+		//paneCode.setStyle("-fx-background-color:transparent;");
+		//paneCode.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+		//realHeightProperty = paneCode.heightProperty();
 
-		layout.setCenter(paneCode);
+		layout.setCenter(boxCode);
 		
 		// Left
-		leftBackground = new ImageView(new Image(getClass().getResourceAsStream(leftBackgroundImage)));
-		leftBackground.fitHeightProperty().bind(realHeightProperty);
+		ImageView leftBackground = new ImageView(new Image(getClass().getResourceAsStream(leftBackgroundImage)));
 		leftBackground.setFitWidth(LEFT_BAR_WIDTH);
-		layout.setLeft(leftBackground);
+		leftBackground.setFitHeight(LEFT_BAR_MIN_HEIGHT);
+		ImageViewPane imagePane = new ImageViewPane(leftBackground);
+		layout.setLeft(imagePane);
 
 		// Footer
 		shapeToClip = createFooterShape();
