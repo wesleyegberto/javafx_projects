@@ -105,7 +105,6 @@ public class IfBlock extends FluxControlBlock {
 		textImageView = new ImageView(new Image(getClass().getResourceAsStream(textThenImage)));
 		headerLayout.getChildren().add(textImageView);
 
-		//background.fitWidthProperty().bind(headerLayout.widthProperty());
 		layout.setTop(headerBackgroundPane);
 
 		// Center

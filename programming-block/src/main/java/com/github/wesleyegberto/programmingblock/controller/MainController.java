@@ -1,19 +1,12 @@
 package com.github.wesleyegberto.programmingblock.controller;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import com.github.wesleyegberto.programmingblock.component.*;
-import javafx.scene.Parent;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.github.wesleyegberto.programmingblock.component.util.Clipboard;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ScrollPane;
@@ -21,9 +14,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * @author Wesley Egberto on 21/04/16.
@@ -99,7 +96,6 @@ public class MainController implements Initializable {
 		
 		for (Block command : defaultCommands) {
 			addEventsForDraggableBlock(command);
-			System.out.println(command);
 			commandToolbox.getChildren().add(command);
 		}
 	}
@@ -109,26 +105,31 @@ public class MainController implements Initializable {
 		final VBox droppableArea = block.getBoxCode();
 
 		droppableArea.setOnMouseDragEntered(evt -> {
-			//logger.debug("Program block entered");
+			logger.debug("Mouse drag entered at inner " + block);
 			droppableArea.setStyle("-fx-border-color:red;-fx-border-width:2;-fx-border-style:solid;");
 			evt.consume();
 		});
 		droppableArea.setOnMouseDragExited(evt -> {
-			//logger.debug("Program block exited");
+			logger.debug("Mouse drag exited from inner " + block);
 			droppableArea.setStyle("-fx-border-style:none;");
 			evt.consume();
 		});
 		droppableArea.setOnMouseDragReleased(evt -> {
-			if(!clipboard.hasValue() || !clipboard.getValue().isTemplate()) {
+			logger.debug("Mouse drag released inner: " + block);
+			if(!clipboard.hasValue()) {
 				return;
 			}
 			if(clipboard.getValue() instanceof CommandBlock || clipboard.getValue() instanceof FluxControlBlock) {
 				logger.debug(clipboard.getValue() + " was released at " + block);
-				Block newBlock = cloneBlockFromToolbox(evt);
-				block.addBlock(newBlock);
-				clipboard.clear();
-				evt.consume();
+				if(block instanceof ProgramBlock && clipboard.getValue().isTemplate()) {
+					Block newBlock = cloneBlockFromToolbox(evt, clipboard.getValue());
+					block.addBlock(newBlock);
+				} else {
+					setDraggedBlockToTarget(evt, block, true, clipboard.getValue());
+				}
 			}
+			clipboard.clear();
+			evt.consume();
 		});
 	}
 
@@ -171,50 +172,59 @@ public class MainController implements Initializable {
 	private void addEventsForTargetBlock(final Block block) {
 		// Events as a target
 		block.setOnMouseDragEntered(evt -> {
-			//logger.debug("Mouse entered: " + block);
+			logger.debug("Mouse entered: " + block);
 			block.setStyle("-fx-border-color:red;-fx-border-width:1;-fx-border-style:solid;");
 			evt.consume();
 		});
 		block.setOnMouseDragExited(evt -> {
+			logger.debug("Mouse exited: " + block);
 			block.setStyle("-fx-border-style:none;");
 			evt.consume();
 		});
 		block.setOnMouseDragReleased(evt -> {
+			logger.debug("Mouse drag released: " + block);
 			if(!clipboard.hasValue())
 				return;
 			if(clipboard.getValue() instanceof CommandBlock || clipboard.getValue() instanceof FluxControlBlock) {
 				logger.debug("Item " + clipboard.getValue() + " released at " + block);
-				Block newBlock = clipboard.getValue();
-
-				if(newBlock.isTemplate()) { // Cria bloco a partir do template
-					newBlock = cloneBlockFromToolbox(evt);
-				} else { // Já está criado, apenas move
-					// Retira e coloca o item após o item em que foi droppado
-					FluxControlBlock sourceParent = getParenteBlock(clipboard.getValue().getParent());
-					if(sourceParent != null) {
-						sourceParent.removeBlock(newBlock);
-					} else {
-						VBox parentSource = (VBox) newBlock.getParent();
-						parentSource.getChildren().remove(newBlock);
-					}
-				}
-				// Adiciona no target
-				FluxControlBlock parentBlock = getParenteBlock(block.getParent());
-				if(parentBlock == null) {
-					VBox parentTarget = (VBox) block.getParent();
-					int index = parentTarget.getChildren().indexOf(block);
-					System.out.println("\tDropped in VBox at: " + index);
-					parentTarget.getChildren().add(index + 1, newBlock);
-				} else {
-					parentBlock.addBlockAfter(newBlock, block);
-				}
-				// faz com que o bloco pare de ignorar MouseEvents
-				newBlock.setMouseTransparent(false);
+				setDraggedBlockToTarget(evt, block, false, clipboard.getValue());
 				clipboard.clear();
 				sceneRoot.getChildren().remove(dragImageView);
 				evt.consume();
 			}
 		});
+	}
+
+	private void setDraggedBlockToTarget(MouseDragEvent evt, Block targetBlock, boolean draggedToInner, Block draggedBlock) {
+		if(draggedBlock.isTemplate()) { // Cria bloco a partir do template
+			draggedBlock = cloneBlockFromToolbox(evt, draggedBlock);
+		} else { // Já está criado, apenas move
+			// Retira e coloca o item após o item em que foi droppado
+			FluxControlBlock sourceParent = getParenteBlock(draggedBlock.getParent());
+			if(sourceParent != null) {
+				sourceParent.removeBlock(draggedBlock);
+			} else {
+				VBox parentSource = (VBox) draggedBlock.getParent();
+				parentSource.getChildren().remove(draggedBlock);
+			}
+		}
+		// Adiciona no target
+		FluxControlBlock parentBlock;
+		if(draggedToInner && targetBlock instanceof FluxControlBlock) {
+			parentBlock = (FluxControlBlock) targetBlock;
+		} else {
+			parentBlock = getParenteBlock(targetBlock.getParent());
+		}
+		if(parentBlock == null) {
+			VBox parentTarget = (VBox) targetBlock.getParent();
+			int index = parentTarget.getChildren().indexOf(targetBlock);
+			//System.out.println("\tDropped in VBox at: " + index);
+			parentTarget.getChildren().add(index + 1, draggedBlock);
+		} else {
+			parentBlock.addBlockAfter(draggedBlock, targetBlock);
+		}
+		// faz com que o bloco pare de ignorar MouseEvents
+		draggedBlock.setMouseTransparent(false);
 	}
 
 	private FluxControlBlock getParenteBlock(Parent parent) {
@@ -225,15 +235,15 @@ public class MainController implements Initializable {
 		return null;
 	}
 
-	private Block cloneBlockFromToolbox(MouseDragEvent evt) {
-		Block newBlock = clipboard.getValue().cloneBlock();
+	private Block cloneBlockFromToolbox(MouseDragEvent evt, Block draggedBlock) {
+		Block newBlock = draggedBlock.cloneBlock();
 		// Seta a localização atual
 		newBlock.setDragAnchor(evt.getSceneX(), evt.getSceneY());
 		addEventsForDraggableBlock(newBlock);
-		addEventsForTargetBlock(newBlock);
 		if (newBlock instanceof FluxControlBlock) {
 			initializeDragEventsTarget((FluxControlBlock) newBlock);
 		} else {
+			addEventsForTargetBlock(newBlock);
 		}
 		return newBlock;
 	}

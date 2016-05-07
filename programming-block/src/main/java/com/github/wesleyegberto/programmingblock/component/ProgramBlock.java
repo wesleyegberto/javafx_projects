@@ -47,7 +47,6 @@ public class ProgramBlock extends FluxControlBlock {
 		header.getChildren().add(background);
 		ImageView textProgramImage = new ImageView(new Image(getClass().getResourceAsStream(this.textProgramImage)));
 		header.getChildren().add(textProgramImage);
-
 		layout.setTop(header);
 
 		// Center

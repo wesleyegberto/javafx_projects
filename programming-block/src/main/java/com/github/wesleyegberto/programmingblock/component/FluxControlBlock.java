@@ -38,19 +38,23 @@ public abstract class FluxControlBlock extends Block {
 		return boxCode;
 	}
 
-	public void addBlock(Block block) {
+	public void addBlock(Block newBlock) {
 		System.out.println("\tDropped at FluxControlBlock");
-		this.listInternalCommands.add(block);
-		boxCode.getChildren().add(block);
+		this.listInternalCommands.add(newBlock);
+		boxCode.getChildren().add(newBlock);
 	}
 
 	public void addBlockAfter(Block newBlock, Block block) {
-		int index = boxCode.getChildren().indexOf(block);
-		System.out.println("\tDropped in FluxControlBlock at: " + index);
-		if(index >= 0) {
-			boxCode.getChildren().add(index + 1, newBlock);
+		if(this == block) {
+			addBlock(newBlock);
 		} else {
-			boxCode.getChildren().add(newBlock);
+			int index = boxCode.getChildren().indexOf(block);
+			//System.out.println("\tDropped in FluxControlBlock at: " + index);
+			if (index >= 0) {
+				boxCode.getChildren().add(index + 1, newBlock);
+			} else {
+				boxCode.getChildren().add(newBlock);
+			}
 		}
 	}
 
