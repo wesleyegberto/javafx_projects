@@ -117,6 +117,7 @@ public class MainController implements Initializable {
 		droppableArea.setOnMouseDragReleased(evt -> {
 			logger.debug("Mouse drag released inner: " + block);
 			if(!clipboard.hasValue()) {
+				evt.consume();
 				return;
 			}
 			if(clipboard.getValue() instanceof CommandBlock || clipboard.getValue() instanceof FluxControlBlock) {
@@ -158,6 +159,7 @@ public class MainController implements Initializable {
 			dragImageView.setMouseTransparent(true);
 			block.setMouseTransparent(true);
 			block.setCursor(Cursor.CLOSED_HAND);
+			evt.consume();
 		});
 		block.setOnMouseReleased(evt -> {
 			//logger.debug("Mouse Released from " + dragItem);
@@ -166,6 +168,7 @@ public class MainController implements Initializable {
 			block.setCursor(Cursor.DEFAULT);
 			sceneRoot.getChildren().remove(dragImageView);
 			clipboard.clear();
+			evt.consume();
 		});
 	}
 	
@@ -183,8 +186,10 @@ public class MainController implements Initializable {
 		});
 		block.setOnMouseDragReleased(evt -> {
 			logger.debug("Mouse drag released: " + block);
-			if(!clipboard.hasValue())
+			if(!clipboard.hasValue()) {
+				evt.consume();
 				return;
+			}
 			if(clipboard.getValue() instanceof CommandBlock || clipboard.getValue() instanceof FluxControlBlock) {
 				logger.debug("Item " + clipboard.getValue() + " released at " + block);
 				setDraggedBlockToTarget(evt, block, false, clipboard.getValue());
