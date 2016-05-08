@@ -9,13 +9,12 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 /**
  * @author Wesley
  */
 public abstract class Block extends Region {
-	protected Parent root;
-
 	private static int commonId = 1;
 	protected int id;
 	
@@ -63,6 +62,14 @@ public abstract class Block extends Region {
 	public abstract String generateCode();
 
 	protected abstract void createBlock();
+
+	protected void updateBlock() {
+		Shape blockNewClip = createRectangle(0, 0, getWidth(), getHeight());
+		blockNewClip = Shape.subtract(blockNewClip, createTriangleToRemove(50d));
+		blockNewClip = Shape.union(blockNewClip, createTriangleToAdd(50d, getHeight()));
+		background.setClip(blockNewClip);
+		background.setFitWidth(getWidth());
+	}
 
 	protected Rectangle createRectangle(double x, double y, double w, double h) {
 		Rectangle rec = new Rectangle();

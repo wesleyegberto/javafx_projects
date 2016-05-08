@@ -1,10 +1,13 @@
 package com.github.wesleyegberto.programmingblock.component;
 
 import com.github.wesleyegberto.programmingblock.component.util.Clipboard;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -22,6 +25,12 @@ public class IfBlock extends FluxControlBlock {
 	private String textIfImage;
 	private String textThenImage;
 	private String operandImage;
+
+	private HBox headerLayout;
+
+	private ParamBlock firstOperand;
+	private RelationalOperatorBlock operator;
+	private ParamBlock secondOperand;
 
 	public IfBlock(String headerBackground, String leftBarBackground, String footerBackground,
 				   String textIfImage, String textThenImage, String operandImage,
@@ -60,7 +69,7 @@ public class IfBlock extends FluxControlBlock {
 		// Header
 		Shape shapeToClip = createHeaderShape();
 		background.setClip(shapeToClip);
-		background.setFitWidth(Constants.FLUX_CONTORL_BLOCK_WIDTH);
+		background.setFitWidth(getWidth());
 		background.setFitHeight(Constants.BLOCK_HEIGHT + 16d);
 
 		StackPane headerBackgroundPane = new StackPane();
@@ -69,37 +78,63 @@ public class IfBlock extends FluxControlBlock {
 		headerBackgroundPane.setMaxHeight(Constants.BLOCK_HEIGHT + 16d);
 		headerBackgroundPane.getChildren().add(background);
 
-		HBox headerLayout = new HBox();
+		headerLayout = new HBox();
 		headerBackgroundPane.getChildren().add(headerLayout);
 
 		// If
 		ImageView textImageView = new ImageView(new Image(getClass().getResourceAsStream(textIfImage)));
 		headerLayout.getChildren().add(textImageView);
 
-		ImageView firstOperand = new ImageView(new Image(getClass().getResourceAsStream(operandImage)));
-		firstOperand.setFitHeight(Constants.BLOCK_HEIGHT);
-		firstOperand.setOnMouseDragReleased(evt -> {
-			Clipboard clipboard = Clipboard.getInstance();
-			System.out.println("Operand dragged at first: " + clipboard.getValue());
-		});
-		headerLayout.getChildren().add(firstOperand);
+		ImageView firstOperandImgVw = new ImageView(new Image(getClass().getResourceAsStream(operandImage)));
+		firstOperandImgVw.setFitHeight(Constants.BLOCK_HEIGHT);
+		if(!isTemplate()) {
+			firstOperandImgVw.setOnMouseDragReleased(evt -> {
+				Clipboard clipboard = Clipboard.getInstance();
+				//System.out.println("Operand dragged at first: " + clipboard.getValue());
+				if (clipboard.hasValue() && clipboard.getValue() instanceof ParamBlock) {
+					firstOperand = clipboard.getValue().cloneBlock();
+					updateOperand(firstOperandImgVw, evt, 1, firstOperand);
+				}
+				clipboard.clear();
+				evt.consume();
+			});
+		}
+		headerLayout.getChildren().add(firstOperandImgVw);
 
-		ImageView operator = new ImageView(new Image(getClass().getResourceAsStream(operandImage)));
-		operator.setFitHeight(Constants.BLOCK_HEIGHT);
-		operator.setOnMouseDragReleased(evt -> {
-			Clipboard clipboard = Clipboard.getInstance();
-			System.out.println("Operand dragged at operator: " + clipboard.getValue());
-		});
-		headerLayout.getChildren().add(operator);
+		ImageView operatorImgVw = new ImageView(new Image(getClass().getResourceAsStream(operandImage)));
+		operatorImgVw.setFitHeight(Constants.BLOCK_HEIGHT);
+		if(!isTemplate()) {
+			operatorImgVw.setOnMouseDragReleased(evt -> {
+				Clipboard clipboard = Clipboard.getInstance();
+				//System.out.println("Operation dragged at operator: " + clipboard.getValue());
+				if (clipboard.hasValue() && clipboard.getValue() instanceof RelationalOperatorBlock) {
+					operator = clipboard.getValue().cloneBlock();
+					operator.setDragAnchor(evt.getSceneX(), evt.getSceneY());
+					operator.setOnMouseDragReleased(operatorImgVw.getOnMouseDragReleased());
+					headerLayout.getChildren().set(2, operator);
+				}
+				clipboard.clear();
+				evt.consume();
+			});
+		}
+		headerLayout.getChildren().add(operatorImgVw);
 
 
-		ImageView secondOperand = new ImageView(new Image(getClass().getResourceAsStream(operandImage)));
-		secondOperand.setFitHeight(Constants.BLOCK_HEIGHT);
-		secondOperand.setOnMouseDragReleased(evt -> {
-			Clipboard clipboard = Clipboard.getInstance();
-			System.out.println("Operand dragged at second: " + clipboard.getValue());
-		});
-		headerLayout.getChildren().add(secondOperand);
+		ImageView secondOperandImgVw = new ImageView(new Image(getClass().getResourceAsStream(operandImage)));
+		secondOperandImgVw.setFitHeight(Constants.BLOCK_HEIGHT);
+		if(!isTemplate()) {
+			secondOperandImgVw.setOnMouseDragReleased(evt -> {
+				Clipboard clipboard = Clipboard.getInstance();
+				//System.out.println("Operand dragged at second: " + clipboard.getValue());
+				if (clipboard.hasValue() && clipboard.getValue() instanceof ParamBlock) {
+					secondOperand = clipboard.getValue().cloneBlock();
+					updateOperand(secondOperandImgVw, evt, 3, secondOperand);
+				}
+				clipboard.clear();
+				evt.consume();
+			});
+		}
+		headerLayout.getChildren().add(secondOperandImgVw);
 
 		// Then
 		textImageView = new ImageView(new Image(getClass().getResourceAsStream(textThenImage)));
@@ -120,6 +155,23 @@ public class IfBlock extends FluxControlBlock {
 
 	}
 
+	private void updateOperand(ImageView operandImgVw, MouseDragEvent evt,
+							   int index, ParamBlock firstOperand) {
+		firstOperand.setDragAnchor(evt.getSceneX(), evt.getSceneY());
+		firstOperand.setOnMouseDragReleased(operandImgVw.getOnMouseDragReleased());
+
+		// Seta o bloco recebido e atualiza o tamanho do bloco
+		Node prevParam = headerLayout.getChildren().set(index, firstOperand);
+		double newWidth = background.getFitWidth();
+		if (prevParam instanceof ImageView) {
+			newWidth = newWidth - operandImgVw.getImage().getWidth() + firstOperand.getWidth();
+		} else {
+			newWidth = newWidth - ((ParamBlock) prevParam).getWidth() + firstOperand.getWidth();
+		}
+		setWidth(newWidth);
+		updateBlock();
+	}
+
 	public static IfBlockBuilder createBuilder() {
 		return new IfBlockBuilder();
 	}
@@ -132,8 +184,8 @@ public class IfBlock extends FluxControlBlock {
 		private String textThenImage;
 		private String operandImage;
 
-		private double width = Constants.FLUX_CONTORL_BLOCK_WIDTH;
-		private double height = 240;
+		private double width = Constants.BLOCK_WIDTH;
+		private double height = Constants.CONTROL_FLUX_BLOCK_HEIGHT;
 		private boolean isTemplate;
 
 		public IfBlockBuilder setHeaderBackground(String headerBackground) {

@@ -2,7 +2,6 @@ package com.github.wesleyegberto.programmingblock.component;
 
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -39,7 +38,7 @@ public class ProgramBlock extends FluxControlBlock {
 		// Header
 		Shape shapeToClip = createHeaderShape();
 		background.setClip(shapeToClip);
-		background.setFitWidth(Constants.FLUX_CONTORL_BLOCK_WIDTH);
+		background.setFitWidth(Constants.CONTROL_FLUX_BLOCK_WIDTH);
 		background.setFitHeight(Constants.BLOCK_HEIGHT + 16d);
 
 		StackPane header = new StackPane();

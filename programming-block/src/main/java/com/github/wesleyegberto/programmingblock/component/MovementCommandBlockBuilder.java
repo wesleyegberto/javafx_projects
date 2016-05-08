@@ -5,8 +5,6 @@ public class MovementCommandBlockBuilder {
 	private String textImage;
 	private String commandName;
 	private String code;
-	private double width = Constants.BLOCK_WIDTH;
-	private double height = Constants.BLOCK_HEIGHT;
 	private boolean isTemplate;
 	private boolean hasParameter = false;
 	private double fromX;
@@ -32,17 +30,7 @@ public class MovementCommandBlockBuilder {
 		return this;
 	}
 
-	public MovementCommandBlockBuilder setWidth(double width) {
-		this.width = width;
-		return this;
-	}
-
-	public MovementCommandBlockBuilder setHeight(double height) {
-		this.height = height;
-		return this;
-	}
-
-	public MovementCommandBlockBuilder setIsTemplate(boolean isTemplate) {
+	public MovementCommandBlockBuilder setTemplate(boolean isTemplate) {
 		this.isTemplate = isTemplate;
 		return this;
 	}
@@ -59,7 +47,7 @@ public class MovementCommandBlockBuilder {
 	}
 
 	public CommandBlock build() {
-		CommandBlock block = new CommandBlock(backgroundImage, textImage, commandName, code, width, height, isTemplate, hasParameter);
+		CommandBlock block = new CommandBlock(backgroundImage, textImage, commandName, code, isTemplate, hasParameter);
 		block.setStartTranslation(fromX);
 		block.setEndTranslation(toX);
 		block.createHorizontalAnimation();

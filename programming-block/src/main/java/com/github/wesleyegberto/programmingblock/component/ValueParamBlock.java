@@ -20,7 +20,7 @@ public class ValueParamBlock extends ParamBlock {
 
 	@Override
 	public ValueParamBlock cloneBlock() {
-		ValueParamBlock block = new ValueParamBlock(backgroundPath, getWidth(), getHeight(), isTemplate());
+		ValueParamBlock block = new ValueParamBlock(backgroundPath, getWidth(), getHeight(), false);
 		block.startDragX = super.startDragX;
 		block.startDragY = super.startDragY;
 		block.dragAnchor = super.dragAnchor;

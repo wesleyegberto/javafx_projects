@@ -1,11 +1,11 @@
 package com.github.wesleyegberto.programmingblock.component;
 
 import com.github.wesleyegberto.programmingblock.component.util.Clipboard;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -27,20 +27,20 @@ public class CommandBlock extends Block {
 	private double startTranslation;
 	private double endTranslation;
 
-	public CommandBlock(String backgroundImage, String textImagePath, String commandName, String code, double width, double height, boolean isTemplate) {
-		this(backgroundImage, textImagePath, commandName, code, width, height, isTemplate, false);
+	public CommandBlock(String backgroundImage, String textImagePath, String commandName, String code, boolean isTemplate) {
+		this(backgroundImage, textImagePath, commandName, code, isTemplate, false);
 	}
 
-	public CommandBlock(String backgroundImage, String textImagePath, String commandName, String code, double width, double height, boolean isTemplate, boolean hasParameter) {
-		super(backgroundImage, code, width, height, isTemplate);
+	public CommandBlock(String backgroundImage, String textImagePath, String commandName, String code, boolean isTemplate, boolean hasParameter) {
+		super(backgroundImage, code, Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT, isTemplate);
 		this.commandName = commandName;
 		this.textImagePath = textImagePath;
 		this.hasParameter = hasParameter;
 
-		setWidth(width);
-		setHeight(height);
-		setMinSize(width, height);
-		setPrefSize(width, height);
+		setWidth(Constants.BLOCK_WIDTH);
+		setHeight(Constants.BLOCK_HEIGHT);
+		setMinSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
+		setPrefSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
 
 		createBlock();
 	}
@@ -57,8 +57,7 @@ public class CommandBlock extends Block {
 	public CommandBlock cloneBlock() {
 		CommandBlock block = new MovementCommandBlockBuilder().setBackgroundImage(backgroundPath).setTextImage(textImagePath)
 									.setCommandName(commandName).setCode(code)
-									.setWidth(getWidth()).setHeight(getHeight())
-									.setIsTemplate(false).setHasParameter(hasParameter)
+									.setTemplate(false).setHasParameter(hasParameter)
 									.setTranslationX(startTranslation, endTranslation)
 									.build();
 		block.startDragX = super.startDragX;
@@ -74,7 +73,7 @@ public class CommandBlock extends Block {
 
 	@Override
 	protected void createBlock() {
-		Shape blockClip = createRectangle(0, 0, Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
+		Shape blockClip = createRectangle(0, 0, getWidth(), getHeight());
 		blockClip = Shape.subtract(blockClip, createTriangleToRemove(connectionLeftPad));
 		blockClip = Shape.union(blockClip, createTriangleToAdd(connectionLeftPad, getHeight()));
 
@@ -98,26 +97,30 @@ public class CommandBlock extends Block {
 		// Espaço para o parâmetro
 		if(hasParameter) {
 			ImageView imgParam = new ImageView(new Image(getClass().getResourceAsStream(Constants.PARAM_IMAGE)));
-			imgParam.setOnMouseDragReleased(evt -> {
-				Clipboard clipboard = Clipboard.getInstance();
-				//System.out.println("Mouse drag released: " + clipboard.getValue());
-				if (clipboard.hasValue() && clipboard.getValue() instanceof ParamBlock) {
-					param = clipboard.getValue().cloneBlock();
-					param.setDragAnchor(evt.getSceneX(), evt.getSceneY());
+			if(!isTemplate()) {
+				imgParam.setOnMouseDragReleased(evt -> {
+					Clipboard clipboard = Clipboard.getInstance();
+					//System.out.println("Mouse drag released: " + clipboard.getValue());
+					if (clipboard.hasValue() && clipboard.getValue() instanceof ParamBlock) {
+						param = clipboard.getValue().cloneBlock();
+						param.setDragAnchor(evt.getSceneX(), evt.getSceneY());
+						param.setOnMouseDragReleased(imgParam.getOnMouseDragReleased());
 
+						// Seta o bloco recebido e atualiza o tamanho do bloco
+						Node prevParam = layout.getChildren().set(1, param);
+						double newWidth = background.getFitWidth();
+						if(prevParam instanceof ImageView) {
+							newWidth = background.getFitWidth() - imgParam.getImage().getWidth() + param.getWidth();
+						} else {
+							newWidth = background.getFitWidth() - ((ParamBlock) prevParam).getWidth() + param.getWidth();
+						}
+						setWidth(newWidth);
+						updateBlock();
+					}
 					clipboard.clear();
-					// Seta o bloco recebido na segunda posição
-					ImageView paramSlot = (ImageView) layout.getChildren().set(1, param);
-					double newWidth = getWidth() - paramSlot.getImage().getWidth() + param.getWidth();
-					setMinWidth(newWidth);
-					setWidth(newWidth);
-					setPrefWidth(newWidth);
-					setMaxWidth(newWidth);
-					updateBlock();
-
 					evt.consume();
-				}
-			});
+				});
+			}
 			layout.getChildren().add(imgParam);
 		}
 
@@ -125,16 +128,6 @@ public class CommandBlock extends Block {
 		this.imgTank = new ImageView(new Image(getClass().getResourceAsStream(Constants.TANK_IMAGE)));
 		layout.getChildren().add(imgTank);
 
-	}
-
-	private void updateBlock() {
-		if(param == null)
-			return;
-		Shape blockNewClip = createRectangle(0, 0, getWidth(), getHeight());
-		blockNewClip = Shape.subtract(blockNewClip, createTriangleToRemove(50d));
-		blockNewClip = Shape.union(blockNewClip, createTriangleToAdd(50d, getHeight()));
-		background.setClip(blockNewClip);
-		background.setFitWidth(getWidth());
 	}
 
 	public void createHorizontalAnimation() {

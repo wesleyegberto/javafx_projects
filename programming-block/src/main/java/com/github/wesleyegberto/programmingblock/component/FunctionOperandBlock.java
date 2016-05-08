@@ -7,28 +7,24 @@ import javafx.scene.shape.Shape;
 /**
  * @author Wesley Egberto on 24/04/16.
  */
-public class FunctionParamBlock extends OperandBlock {
-	private Object value;
-
-	public FunctionParamBlock(String backgroundImage, double width, double height, boolean isTemplate) {
-		super(backgroundImage, null, width, height, isTemplate);
-
+public class FunctionOperandBlock extends ParamBlock {
+	public FunctionOperandBlock(String backgroundImage, double width, double height, boolean isTemplate, String functionName) {
+		super(backgroundImage, functionName, width, height, isTemplate);
 		createBlock();
 	}
 
 	@Override
-	public FunctionParamBlock cloneBlock() {
-		FunctionParamBlock block = new FunctionParamBlock(backgroundPath, getWidth(), getHeight(), isTemplate());
+	public FunctionOperandBlock cloneBlock() {
+		FunctionOperandBlock block = new FunctionOperandBlock(backgroundPath, getWidth(), getHeight(), false, code);
 		block.startDragX = super.startDragX;
 		block.startDragY = super.startDragY;
 		block.dragAnchor = super.dragAnchor;
-		block.value = value;
 		return block;
 	}
 
 	@Override
 	public String generateCode() {
-		return null;
+		return code + "()";
 	}
 
 	@Override
@@ -36,7 +32,7 @@ public class FunctionParamBlock extends OperandBlock {
 		Shape blockClip = createRectangle(0, 0, getWidth(), getHeight());
 		background.setClip(blockClip);
 		background.setFitWidth(getWidth());
-		background.setFitHeight(getHeight() + 16f);
+		background.setFitHeight(getHeight());
 		background.setCursor(Cursor.CLOSED_HAND);
 
 		getChildren().add(background);
@@ -50,7 +46,7 @@ public class FunctionParamBlock extends OperandBlock {
 
 	@Override
 	public String toString() {
-		return "FunctionParamBlock [id=" + id + "]";
+		return "FunctionOperandBlock [id=" + id + "]";
 	}
 
 	public static FunctionParamBlockBuilder createBuilder() {
@@ -59,9 +55,10 @@ public class FunctionParamBlock extends OperandBlock {
 
 	public static class FunctionParamBlockBuilder {
 		private String backgroundImage;
-		private double width = 200d;
+		private double width = 130d;
 		private double height = 80d;
 		private boolean isTemplate;
+		private String functionName;
 
 		public FunctionParamBlockBuilder setBackgroundImage(String backgroundImage) {
 			this.backgroundImage = backgroundImage;
@@ -83,8 +80,13 @@ public class FunctionParamBlock extends OperandBlock {
 			return this;
 		}
 
-		public FunctionParamBlock build() {
-			return new FunctionParamBlock(backgroundImage, width, height, isTemplate);
+		public FunctionParamBlockBuilder setFunctionName(String functionName) {
+			this.functionName = functionName;
+			return this;
+		}
+
+		public FunctionOperandBlock build() {
+			return new FunctionOperandBlock(backgroundImage, width, height, isTemplate, functionName);
 		}
 	}
 
