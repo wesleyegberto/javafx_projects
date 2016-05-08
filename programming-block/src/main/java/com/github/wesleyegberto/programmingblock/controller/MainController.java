@@ -128,6 +128,16 @@ public class MainController implements Initializable {
 				.setTextDoImage("/images/enquanto/texto_faca.png")
 				.setOperandImage("/images/param_comando.png")
 				.setTemplate(true)
+				.build(),
+			ForBlock.createBuilder()
+				.setHeaderBackground("/images/para/header.png")
+				.setLeftBarBackground("/images/para/left_bar.png")
+				.setFooterBackground("/images/para/footer.png")
+				.setTextForImage("/images/para/texto_para.png")
+				.setTextToImage("/images/para/texto_ate.png")
+				.setTextDoImage("/images/para/texto_faca.png")
+				.setOperandImage("/images/param_comando.png")
+				.setTemplate(true)
 				.build()
 		};
 		

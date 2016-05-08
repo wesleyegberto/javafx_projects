@@ -76,7 +76,7 @@ public class WhileBlock extends FluxControlBlock {
 		headerLayout = new HBox();
 		headerBackgroundPane.getChildren().add(headerLayout);
 
-		// If
+		// While
 		ImageView textImageView = new ImageView(new Image(getClass().getResourceAsStream(textWhileImage)));
 		headerLayout.getChildren().add(textImageView);
 
