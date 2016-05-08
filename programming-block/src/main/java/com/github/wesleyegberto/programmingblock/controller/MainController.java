@@ -119,6 +119,15 @@ public class MainController implements Initializable {
 				.setTextThenImage("/images/se/texto_entao.png")
 				.setOperandImage("/images/param_comando.png")
 				.setTemplate(true)
+				.build(),
+			WhileBlock.createBuilder()
+				.setHeaderBackground("/images/enquanto/header.png")
+				.setLeftBarBackground("/images/enquanto/left_bar.png")
+				.setFooterBackground("/images/enquanto/footer.png")
+				.setTextWhileImage("/images/enquanto/texto_enquanto.png")
+				.setTextDoImage("/images/enquanto/texto_faca.png")
+				.setOperandImage("/images/param_comando.png")
+				.setTemplate(true)
 				.build()
 		};
 		
@@ -230,11 +239,26 @@ public class MainController implements Initializable {
 	}
 
 	private void setDraggedBlockToTarget(MouseDragEvent evt, Block targetBlock, boolean draggedToInner, Block draggedBlock) {
+		FluxControlBlock targetParent;
+		// Adiciona no target
+		if(draggedToInner && targetBlock instanceof FluxControlBlock) {
+			targetParent = (FluxControlBlock) targetBlock;
+		} else {
+			targetParent = getParenteBlock(targetBlock.getParent());
+		}
 		if(draggedBlock.isTemplate()) { // Cria bloco a partir do template
 			draggedBlock = cloneBlockFromToolbox(evt, draggedBlock);
 		} else { // Já está criado, apenas move
 			// Retira e coloca o item após o item em que foi droppado
 			FluxControlBlock sourceParent = getParenteBlock(draggedBlock.getParent());
+			System.out.printf("SP: %s, SB: %s, TP: %s, TB: %s\n", sourceParent, draggedBlock, targetParent, targetBlock);
+			// Se foi droppado no mesmo parent ou no mesmo lugar então cancela
+			if(targetParent == sourceParent && draggedBlock == null || targetBlock == draggedBlock || sourceParent == targetBlock) {
+				System.out.println("Mesmo parente");
+				// faz com que o bloco pare de ignorar MouseEvents
+				draggedBlock.setMouseTransparent(false);
+				return;
+			}
 			if(sourceParent != null) {
 				sourceParent.removeBlock(draggedBlock);
 			} else {
@@ -242,20 +266,13 @@ public class MainController implements Initializable {
 				parentSource.getChildren().remove(draggedBlock);
 			}
 		}
-		// Adiciona no target
-		FluxControlBlock parentBlock;
-		if(draggedToInner && targetBlock instanceof FluxControlBlock) {
-			parentBlock = (FluxControlBlock) targetBlock;
-		} else {
-			parentBlock = getParenteBlock(targetBlock.getParent());
-		}
-		if(parentBlock == null) {
+		if(targetParent == null) {
 			VBox parentTarget = (VBox) targetBlock.getParent();
 			int index = parentTarget.getChildren().indexOf(targetBlock);
 			//System.out.println("\tDropped in VBox at: " + index);
 			parentTarget.getChildren().add(index + 1, draggedBlock);
 		} else {
-			parentBlock.addBlockAfter(draggedBlock, targetBlock);
+			targetParent.addBlockAfter(draggedBlock, targetBlock);
 		}
 		// faz com que o bloco pare de ignorar MouseEvents
 		draggedBlock.setMouseTransparent(false);
@@ -274,10 +291,9 @@ public class MainController implements Initializable {
 		// Seta a localização atual
 		newBlock.setDragAnchor(evt.getSceneX(), evt.getSceneY());
 		addEventsForDraggableBlock(newBlock);
+		addEventsForTargetBlock(newBlock);
 		if (newBlock instanceof FluxControlBlock) {
 			initializeDragEventsTarget((FluxControlBlock) newBlock);
-		} else {
-			addEventsForTargetBlock(newBlock);
 		}
 		return newBlock;
 	}

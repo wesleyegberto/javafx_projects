@@ -12,6 +12,7 @@ public class Constants {
 	// Constantes dos blocos
 	public static final double BLOCK_WIDTH = 400d;
 	public static final double BLOCK_HEIGHT = 80d;
+	public static final double WHILE_BLOCK_WIDTH = 450d;
 	public static final double CONTROL_FLUX_BLOCK_WIDTH = 430d;
 	public static final double CONTROL_FLUX_BLOCK_HEIGHT = 230d;
 

@@ -1,9 +1,11 @@
 package com.github.wesleyegberto.programmingblock.component;
 
-import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -19,9 +21,8 @@ public abstract class FluxControlBlock extends Block {
 	protected static final double LEFT_BAR_MIN_HEIGHT = 80d;
 	protected static final double LEFT_BAR_WIDTH = 20d;
 
-	protected ReadOnlyDoubleProperty realHeightProperty;
 	protected BorderPane layout;
-	//protected ScrollPane paneCode;
+	protected HBox headerLayout;
 	protected VBox boxCode;
 
 	// Lista de comandos internos (quando for um controle de fluxo)
@@ -99,5 +100,22 @@ public abstract class FluxControlBlock extends Block {
 		footerBackground.setFitWidth(getWidth());
 		footerBackground.setFitHeight(Constants.BLOCK_HEIGHT + 16d);
 		return footerBackground;
+	}
+
+	protected void updateOperand(ImageView operandImgVw, MouseDragEvent evt,
+							   int index, ParamBlock firstOperand) {
+		firstOperand.setDragAnchor(evt.getSceneX(), evt.getSceneY());
+		firstOperand.setOnMouseDragReleased(operandImgVw.getOnMouseDragReleased());
+
+		// Seta o bloco recebido e atualiza o tamanho do bloco
+		Node prevParam = headerLayout.getChildren().set(index, firstOperand);
+		double newWidth = background.getFitWidth();
+		if (prevParam instanceof ImageView) {
+			newWidth = newWidth - operandImgVw.getImage().getWidth() + firstOperand.getWidth();
+		} else {
+			newWidth = newWidth - ((ParamBlock) prevParam).getWidth() + firstOperand.getWidth();
+		}
+		setWidth(newWidth);
+		updateBlock();
 	}
 }

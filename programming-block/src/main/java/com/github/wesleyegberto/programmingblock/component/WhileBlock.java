@@ -1,13 +1,10 @@
 package com.github.wesleyegberto.programmingblock.component;
 
 import com.github.wesleyegberto.programmingblock.component.util.Clipboard;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -17,37 +14,37 @@ import javafx.scene.shape.Shape;
 /**
  * @author Wesley Egberto on 21/04/16.
  */
-public class IfBlock extends FluxControlBlock {
+public class WhileBlock extends FluxControlBlock {
 
 	private String headerBackgroundImage;
 	private String leftBarBackgroundImage;
 	private String footerBackgroundImage;
-	private String textIfImage;
-	private String textThenImage;
+	private String textWhileImage;
+	private String textDoImage;
 	private String operandImage;
 
 	private ParamBlock firstOperand;
 	private RelationalOperatorBlock operator;
 	private ParamBlock secondOperand;
 
-	public IfBlock(String headerBackground, String leftBarBackground, String footerBackground,
-				   String textIfImage, String textThenImage, String operandImage,
-				   double width, double height, boolean isTemplate) {
+	public WhileBlock(String headerBackground, String leftBarBackground, String footerBackground,
+					  String textWhileImage, String textDoImage, String operandImage,
+					  double width, double height, boolean isTemplate) {
 		super(headerBackground, null, width, height, isTemplate);
 
 		this.headerBackgroundImage = headerBackground;
 		this.leftBarBackgroundImage = leftBarBackground;
 		this.footerBackgroundImage = footerBackground;
-		this.textIfImage = textIfImage;
-		this.textThenImage = textThenImage;
+		this.textWhileImage = textWhileImage;
+		this.textDoImage = textDoImage;
 		this.operandImage = operandImage;
 
 		createBlock();
 	}
 	
 	@Override
-	public IfBlock cloneBlock() {
-		return new IfBlock(headerBackgroundImage, leftBarBackgroundImage, footerBackgroundImage, textIfImage, textThenImage,
+	public WhileBlock cloneBlock() {
+		return new WhileBlock(headerBackgroundImage, leftBarBackgroundImage, footerBackgroundImage, textWhileImage, textDoImage,
 			operandImage, getWidth(), getHeight(), false);
 	}
 
@@ -80,7 +77,7 @@ public class IfBlock extends FluxControlBlock {
 		headerBackgroundPane.getChildren().add(headerLayout);
 
 		// If
-		ImageView textImageView = new ImageView(new Image(getClass().getResourceAsStream(textIfImage)));
+		ImageView textImageView = new ImageView(new Image(getClass().getResourceAsStream(textWhileImage)));
 		headerLayout.getChildren().add(textImageView);
 
 		ImageView firstOperandImgVw = new ImageView(new Image(getClass().getResourceAsStream(operandImage)));
@@ -135,7 +132,7 @@ public class IfBlock extends FluxControlBlock {
 		headerLayout.getChildren().add(secondOperandImgVw);
 
 		// Then
-		textImageView = new ImageView(new Image(getClass().getResourceAsStream(textThenImage)));
+		textImageView = new ImageView(new Image(getClass().getResourceAsStream(textDoImage)));
 		headerLayout.getChildren().add(textImageView);
 
 		layout.setTop(headerBackgroundPane);
@@ -153,69 +150,69 @@ public class IfBlock extends FluxControlBlock {
 
 	}
 
-	public static IfBlockBuilder createBuilder() {
-		return new IfBlockBuilder();
+	public static WhileBlockBuilder createBuilder() {
+		return new WhileBlockBuilder();
 	}
 
-	public static class IfBlockBuilder {
+	public static class WhileBlockBuilder {
 		private String headerBackground;
 		private String leftBarBackground;
 		private String footerBackground;
-		private String textIfImage;
-		private String textThenImage;
+		private String textWhileImage;
+		private String textDoImage;
 		private String operandImage;
 
-		private double width = Constants.BLOCK_WIDTH;
+		private double width = Constants.WHILE_BLOCK_WIDTH;
 		private double height = Constants.CONTROL_FLUX_BLOCK_HEIGHT;
 		private boolean isTemplate;
 
-		public IfBlockBuilder setHeaderBackground(String headerBackground) {
+		public WhileBlockBuilder setHeaderBackground(String headerBackground) {
 			this.headerBackground = headerBackground;
 			return this;
 		}
 
-		public IfBlockBuilder setLeftBarBackground(String leftBarBackground) {
+		public WhileBlockBuilder setLeftBarBackground(String leftBarBackground) {
 			this.leftBarBackground = leftBarBackground;
 			return this;
 		}
 
-		public IfBlockBuilder setFooterBackground(String footerBackground) {
+		public WhileBlockBuilder setFooterBackground(String footerBackground) {
 			this.footerBackground = footerBackground;
 			return this;
 		}
 
-		public IfBlockBuilder setTextIfImage(String textIfImage) {
-			this.textIfImage = textIfImage;
+		public WhileBlockBuilder setTextWhileImage(String textWhileImage) {
+			this.textWhileImage = textWhileImage;
 			return this;
 		}
 
-		public IfBlockBuilder setTextThenImage(String textThenImage) {
-			this.textThenImage = textThenImage;
+		public WhileBlockBuilder setTextDoImage(String textDoImage) {
+			this.textDoImage = textDoImage;
 			return this;
 		}
 
-		public IfBlockBuilder setWidth(double width) {
+		public WhileBlockBuilder setWidth(double width) {
 			this.width = width;
 			return this;
 		}
 
-		public IfBlockBuilder setHeight(double height) {
+		public WhileBlockBuilder setHeight(double height) {
 			this.height = height;
 			return this;
 		}
 
-		public IfBlockBuilder setTemplate(boolean template) {
+		public WhileBlockBuilder setTemplate(boolean template) {
 			isTemplate = template;
 			return this;
 		}
 
-		public IfBlockBuilder setOperandImage(String operandImage) {
+		public WhileBlockBuilder setOperandImage(String operandImage) {
 			this.operandImage = operandImage;
 			return this;
 		}
 
-		public IfBlock build() {
-			return new IfBlock(headerBackground, leftBarBackground, footerBackground, textIfImage, textThenImage,
+		public WhileBlock build() {
+			return new WhileBlock(headerBackground, leftBarBackground, footerBackground, textWhileImage, textDoImage,
 							  operandImage, width, height, isTemplate);
 		}
 	}
