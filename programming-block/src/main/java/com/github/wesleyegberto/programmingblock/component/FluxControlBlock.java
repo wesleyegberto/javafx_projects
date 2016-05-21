@@ -102,6 +102,18 @@ public abstract class FluxControlBlock extends Block {
 		return footerBackground;
 	}
 
+	protected void updateBlock() {
+		// Retângulo com a barra esquerda
+		Rectangle rectConnection = createRectangle(0, Constants.BLOCK_HEIGHT - connectionHeight, LEFT_BAR_WIDTH, connectionHeight * 3);
+		rectConnection.setArcHeight(0d);
+		rectConnection.setArcWidth(0d);
+		Shape blockNewClip = Shape.union(createRectangle(0, 0, getWidth(), Constants.BLOCK_HEIGHT), rectConnection);
+		blockNewClip = Shape.subtract(blockNewClip, createTriangleToRemove(50d));
+		blockNewClip = Shape.union(blockNewClip, createTriangleToAdd(50d, Constants.BLOCK_HEIGHT));
+		background.setClip(blockNewClip);
+		background.setFitWidth(getWidth());
+	}
+
 	protected void updateOperand(ImageView operandImgVw, MouseDragEvent evt,
 							   int index, ParamBlock firstOperand) {
 		firstOperand.setDragAnchor(evt.getSceneX(), evt.getSceneY());

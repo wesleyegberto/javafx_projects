@@ -1,7 +1,6 @@
 package com.github.wesleyegberto.programmingblock.component;
 
 import javafx.scene.Cursor;
-import javafx.scene.layout.HBox;
 import javafx.scene.shape.Shape;
 
 /**
@@ -10,6 +9,13 @@ import javafx.scene.shape.Shape;
 public class FunctionOperandBlock extends ParamBlock {
 	public FunctionOperandBlock(String backgroundImage, double width, double height, boolean isTemplate, String functionName) {
 		super(backgroundImage, functionName, width, height, isTemplate);
+
+		setWidth(width);
+		setHeight(height);
+		setMinSize(width, height);
+		setPrefSize(width, height);
+		setMaxSize(width, height);
+
 		createBlock();
 	}
 
@@ -36,11 +42,6 @@ public class FunctionOperandBlock extends ParamBlock {
 		background.setCursor(Cursor.CLOSED_HAND);
 
 		getChildren().add(background);
-
-		// Layout para os componentes interno
-		HBox layout = new HBox();
-		layout.setPadding(StyleConstants.PARAM_INSETS);
-		getChildren().add(layout);
 
 	}
 
