@@ -49,6 +49,7 @@ public class MainController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		paneCode.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		VBox.setVgrow(paneCode, Priority.ALWAYS);
+		commandToolbox.setSpacing(5);
 
 		// Criação do bloco principal
 		ProgramBlock programBlock = ProgramBlock.createBuilder()
@@ -62,19 +63,30 @@ public class MainController implements Initializable {
 		initializeDragEventsTarget(programBlock);
 		
 		Block[] defaultCommands = {
-			// Comandos
-			new MovementCommandBlockBuilder().setTextImage("/images/texto_avancar.png")
-				.setCommandImage(Constants.TANK_IMAGE).setCommandName("AVANÇAR").setCode("avancar(:param)")
+			// Comandos de movimentos
+			MovementCommandBlock.createBuilder().setTextImage("/images/texto_avancar.png")
+				.setCommandImage(Constants.TANK_IMAGE).setCode("avancar(:param)")
 				.setTranslationX(0, 100, 0, 0).setHasParameter(true).setTemplate(true).build(),
-			new MovementCommandBlockBuilder().setTextImage("/images/texto_recuar.png")
-				.setCommandImage(Constants.TANK_IMAGE).setCommandName("RECUAR").setCode("recuar(:param)")
+			MovementCommandBlock.createBuilder().setTextImage("/images/texto_recuar.png")
+				.setCommandImage(Constants.TANK_IMAGE).setCode("recuar(:param)")
 				.setTranslationX(100, 0, 0, 0).setHasParameter(true).setTemplate(true).build(),
-			new MovementCommandBlockBuilder().setTextImage("/images/texto_esquerda.png")
-				.setCommandImage(Constants.TANK_TOP_IMAGE).setCommandName("ESQUERDA").setCode("viraEsquerda()")
+			MovementCommandBlock.createBuilder().setTextImage("/images/texto_esquerda.png")
+				.setCommandImage(Constants.TANK_TOP_IMAGE).setCode("viraEsquerda()")
 				.setTranslationX(50, 50, 0, -90).setHasParameter(false).setTemplate(true).build(),
-			new MovementCommandBlockBuilder().setTextImage("/images/texto_direita.png")
-				.setCommandImage(Constants.TANK_TOP_IMAGE).setCommandName("DIREITA").setCode("viraDireita()")
+			MovementCommandBlock.createBuilder().setTextImage("/images/texto_direita.png")
+				.setCommandImage(Constants.TANK_TOP_IMAGE).setCode("viraDireita()")
 				.setTranslationX(50, 50, 0, 90).setHasParameter(false).setTemplate(true).build(),
+
+			// Comandos de ações
+			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_acende_led_verde.png")
+				.setDefaultImage("/images/acoes/led_verde.png").setNextImage("/images/acoes/led_apagado.png")
+				.setCode("acendeLedVerde()").setTemplate(true).build(),
+			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_acende_led_amarelo.png")
+				.setDefaultImage("/images/acoes/led_amarelo.png").setNextImage("/images/acoes/led_apagado.png")
+				.setCode("acendeLedAmarelo()").setTemplate(true).build(),
+			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_acende_led_vermelho.png")
+				.setDefaultImage("/images/acoes/led_vermelho.png").setNextImage("/images/acoes/led_apagado.png")
+				.setCode("acendeLedVermelho()").setTemplate(true).build(),
 
 			// Parâmetros e Operandos
 			ValueParamBlock.createBuilder().setBackgroundImage("/images/param_value.png").setTemplate(true).build(),
@@ -147,13 +159,31 @@ public class MainController implements Initializable {
 				.setTemplate(true)
 				.build()
 		};
-		
+
 		HBox boxRelationalOp = new HBox();
+		HBox boxOperands = new HBox();
+		VBox boxMovementCommands = new VBox(5);
+		VBox boxActionCommands = new VBox(5);
+		VBox boxFlux = new VBox(5);
+
 		commandToolbox.getChildren().add(boxRelationalOp);
+		commandToolbox.getChildren().add(boxOperands);
+		commandToolbox.getChildren().add(boxMovementCommands);
+		commandToolbox.getChildren().add(boxActionCommands);
+		commandToolbox.getChildren().add(boxFlux);
+
 		for (Block command : defaultCommands) {
 			addEventsForDraggableBlock(command);
 			if(command instanceof RelationalOperatorBlock) {
 				boxRelationalOp.getChildren().add(command);
+			} else if(command instanceof ParamBlock) {
+				boxOperands.getChildren().add(command);
+			} else if(command instanceof MovementCommandBlock) {
+				boxMovementCommands.getChildren().add(command);
+			} else if(command instanceof CommandBlock) {
+				boxActionCommands.getChildren().add(command);
+			} else if(command instanceof FluxControlBlock) {
+				boxFlux.getChildren().add(command);
 			} else {
 				commandToolbox.getChildren().add(command);
 			}
@@ -180,7 +210,8 @@ public class MainController implements Initializable {
 				evt.consume();
 				return;
 			}
-			if(clipboard.getValue() instanceof CommandBlock || clipboard.getValue() instanceof FluxControlBlock) {
+			if(clipboard.getValue() instanceof CommandBlock || clipboard.getValue() instanceof MovementCommandBlock
+				|| clipboard.getValue() instanceof FluxControlBlock) {
 				//System.out.println(clipboard.getValue() + " was released at " + block);
 				if(block instanceof ProgramBlock && clipboard.getValue().isTemplate()) {
 					Block newBlock = cloneBlockFromToolbox(evt, clipboard.getValue());
@@ -250,7 +281,9 @@ public class MainController implements Initializable {
 				evt.consume();
 				return;
 			}
-			if(clipboard.getValue() instanceof CommandBlock || clipboard.getValue() instanceof FluxControlBlock) {
+			if(clipboard.getValue() instanceof CommandBlock
+				|| clipboard.getValue() instanceof MovementCommandBlock
+				|| clipboard.getValue() instanceof FluxControlBlock) {
 				//System.out.println("Item " + clipboard.getValue() + " released at " + block);
 				setDraggedBlockToTarget(evt, block, false, clipboard.getValue());
 				clipboard.clear();
@@ -273,10 +306,10 @@ public class MainController implements Initializable {
 		} else { // Já está criado, apenas move
 			// Retira e coloca o item após o item em que foi droppado
 			FluxControlBlock sourceParent = getParenteBlock(draggedBlock.getParent());
-			System.out.printf("SP: %s, SB: %s, TP: %s, TB: %s\n", sourceParent, draggedBlock, targetParent, targetBlock);
+			//System.out.printf("SP: %s, SB: %s, TP: %s, TB: %s\n", sourceParent, draggedBlock, targetParent, targetBlock);
 			// Se foi droppado no mesmo parent ou no mesmo lugar então cancela
 			if(targetParent == sourceParent && draggedBlock == null || targetBlock == draggedBlock || sourceParent == targetBlock) {
-				System.out.println("Mesmo parente");
+				//System.out.println("Mesmo parente");
 				// faz com que o bloco pare de ignorar MouseEvents
 				draggedBlock.setMouseTransparent(false);
 				return;

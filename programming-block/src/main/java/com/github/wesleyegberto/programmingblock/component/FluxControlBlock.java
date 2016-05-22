@@ -59,7 +59,7 @@ public abstract class FluxControlBlock extends Block {
 	}
 
 	public void removeBlock(Block block) {
-		System.out.print("Removing " + block + " from " + this + ": ");
+		//System.out.print("Removing " + block + " from " + this + ": ");
 		listInternalCommands.remove(block);
 		System.out.println(boxCode.getChildren().remove(block));
 	}

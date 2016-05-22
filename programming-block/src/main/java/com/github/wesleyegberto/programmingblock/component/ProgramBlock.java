@@ -7,7 +7,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Shape;
 
 /**
  * @author Wesley Egberto on 25/04/16.
