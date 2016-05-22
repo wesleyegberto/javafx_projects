@@ -36,10 +36,7 @@ public class ProgramBlock extends FluxControlBlock {
 		getChildren().add(layout);
 
 		// Header
-		Shape shapeToClip = createHeaderShape();
-		background.setClip(shapeToClip);
-		background.setFitWidth(Constants.CONTROL_FLUX_BLOCK_WIDTH);
-		background.setFitHeight(Constants.BLOCK_HEIGHT + 16d);
+		setupHeaderBackground(background);
 
 		StackPane header = new StackPane();
 		header.setAlignment(Pos.CENTER_LEFT);

@@ -67,15 +67,12 @@ public class ForBlock extends FluxControlBlock {
 		getChildren().add(layout);
 
 		// Header
-		Shape shapeToClip = createHeaderShape();
-		background.setClip(shapeToClip);
-		background.setFitWidth(getWidth());
-		background.setFitHeight(Constants.BLOCK_HEIGHT + 16d);
+		setupHeaderBackground(background);
 
 		StackPane headerBackgroundPane = new StackPane();
 		headerBackgroundPane.setMinSize(0, 0);
 		headerBackgroundPane.setAlignment(Pos.CENTER_LEFT);
-		headerBackgroundPane.setMaxHeight(Constants.BLOCK_HEIGHT + 16d);
+		headerBackgroundPane.setMaxHeight(Constants.BLOCK_HEIGHT/* + 16d*/);
 		headerBackgroundPane.getChildren().add(background);
 
 		headerLayout = new HBox();

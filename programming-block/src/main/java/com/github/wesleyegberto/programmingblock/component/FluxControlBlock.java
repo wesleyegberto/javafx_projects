@@ -71,7 +71,7 @@ public abstract class FluxControlBlock extends Block {
 		rectConnection.setArcWidth(0d);
 		Shape shapeToClip = Shape.union(createRectangle(0, 0, getWidth(), Constants.BLOCK_HEIGHT), rectConnection);
 		shapeToClip = Shape.subtract(shapeToClip, createTriangleToRemove(connectionLeftPad));
-		shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad + LEFT_BAR_WIDTH, Constants.BLOCK_HEIGHT));
+		//shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad + LEFT_BAR_WIDTH, Constants.BLOCK_HEIGHT));
 		return shapeToClip;
 	}
 
@@ -82,7 +82,7 @@ public abstract class FluxControlBlock extends Block {
 		rectConnection.setArcWidth(0d);
 		Shape shapeToClip = Shape.union(rectConnection, createRectangle(0, 0, getWidth(), Constants.BLOCK_HEIGHT));
 		shapeToClip = Shape.subtract(shapeToClip, createTriangleToRemove(connectionLeftPad + LEFT_BAR_WIDTH));
-		shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad, Constants.BLOCK_HEIGHT));
+		//shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad, Constants.BLOCK_HEIGHT));
 		return shapeToClip;
 	}
 
@@ -93,12 +93,19 @@ public abstract class FluxControlBlock extends Block {
 		return new ImageViewPane(leftBackground);
 	}
 
+	protected void setupHeaderBackground(ImageView background) {
+		Shape shapeToClip = createHeaderShape();
+		background.setClip(shapeToClip);
+		background.setFitWidth(getWidth());
+		background.setFitHeight(Constants.BLOCK_HEIGHT/* + 16d*/);
+	}
+
 	protected ImageView createFooterFromResource(String imageFromResource) {
 		Shape shapeToClip = createFooterShape();
 		ImageView footerBackground = new ImageView(new Image(getClass().getResourceAsStream(imageFromResource)));
 		footerBackground.setClip(shapeToClip);
 		footerBackground.setFitWidth(getWidth());
-		footerBackground.setFitHeight(Constants.BLOCK_HEIGHT + 16d);
+		footerBackground.setFitHeight(Constants.BLOCK_HEIGHT/* + 16d*/);
 		return footerBackground;
 	}
 

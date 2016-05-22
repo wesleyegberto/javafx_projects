@@ -3,6 +3,7 @@ package com.github.wesleyegberto.programmingblock.component;
 import com.github.wesleyegberto.programmingblock.component.util.Clipboard;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -18,6 +19,7 @@ import javafx.util.Duration;
 public class CommandBlock extends Block {
 	private String textImagePath;
 	private String commandName;
+	private String commandImage;
 	private boolean hasParameter;
 	private ParamBlock param;
 
@@ -26,15 +28,20 @@ public class CommandBlock extends Block {
 
 	private double startTranslation;
 	private double endTranslation;
+	private double startAngle;
+	private double endAngle;
 
-	public CommandBlock(String backgroundImage, String textImagePath, String commandName, String code, boolean isTemplate) {
-		this(backgroundImage, textImagePath, commandName, code, isTemplate, false);
+	public CommandBlock(String backgroundImage, String textImagePath, String commandName, String commandImage,
+						String code, boolean isTemplate) {
+		this(backgroundImage, textImagePath, commandName, commandImage, code, isTemplate, false);
 	}
 
-	public CommandBlock(String backgroundImage, String textImagePath, String commandName, String code, boolean isTemplate, boolean hasParameter) {
+	public CommandBlock(String backgroundImage, String textImagePath, String commandName, String commandImage,
+						String code, boolean isTemplate, boolean hasParameter) {
 		super(backgroundImage, code, Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT, isTemplate);
 		this.commandName = commandName;
 		this.textImagePath = textImagePath;
+		this.commandImage = commandImage;
 		this.hasParameter = hasParameter;
 
 		setWidth(Constants.BLOCK_WIDTH);
@@ -53,12 +60,20 @@ public class CommandBlock extends Block {
 		this.endTranslation = endTranslation;
 	}
 
+	public void setStartAngle(double startAngle) {
+		this.startAngle = startAngle;
+	}
+
+	public void setEndAngle(double endAngle) {
+		this.endAngle = endAngle;
+	}
+
 	@Override
 	public CommandBlock cloneBlock() {
 		CommandBlock block = new MovementCommandBlockBuilder().setBackgroundImage(backgroundPath).setTextImage(textImagePath)
-									.setCommandName(commandName).setCode(code)
+									.setCommandName(commandName).setCommandImage(commandImage).setCode(code)
 									.setTemplate(false).setHasParameter(hasParameter)
-									.setTranslationX(startTranslation, endTranslation)
+									.setTranslationX(startTranslation, endTranslation, startAngle, endAngle)
 									.build();
 		block.startDragX = super.startDragX;
 		block.startDragY = super.startDragY;
@@ -125,24 +140,37 @@ public class CommandBlock extends Block {
 		}
 
 		// Tank
-		this.imgTank = new ImageView(new Image(getClass().getResourceAsStream(Constants.TANK_IMAGE)));
+		this.imgTank = new ImageView(new Image(getClass().getResourceAsStream(commandImage)));
 		layout.getChildren().add(imgTank);
 
 	}
 
 	public void createHorizontalAnimation() {
 		imgTank.setTranslateX(startTranslation);
-		// Prepara a animação
-		final Timeline timeline = new Timeline();
-		timeline.setCycleCount(Timeline.INDEFINITE);
-		timeline.setAutoReverse(false);
-		final KeyValue kv = new KeyValue(imgTank.translateXProperty(), endTranslation);
-		final KeyFrame kf = new KeyFrame(Duration.millis(1000), kv);
-		timeline.getKeyFrames().add(kf);
-		setOnMouseEntered(evt -> timeline.play());
-		setOnMouseExited(evt -> {
-			timeline.stop();
-			imgTank.setTranslateX(startTranslation);
-		});
+		// Prepara a animação horizontal
+		if(startTranslation != endTranslation) {
+			final Timeline timeline = new Timeline();
+			timeline.setCycleCount(Timeline.INDEFINITE);
+			timeline.setAutoReverse(false);
+			final KeyValue kv = new KeyValue(imgTank.translateXProperty(), endTranslation);
+			final KeyFrame kf = new KeyFrame(Duration.seconds(1), kv);
+			timeline.getKeyFrames().add(kf);
+			setOnMouseEntered(evt -> timeline.play());
+			setOnMouseExited(evt -> {
+				timeline.stop();
+				imgTank.setTranslateX(startTranslation);
+			});
+		} else if(startAngle != endAngle) {
+			RotateTransition rt = new RotateTransition(Duration.seconds(1), imgTank);
+			rt.setFromAngle(startAngle);
+			rt.setToAngle(endAngle);
+			rt.setCycleCount(4);
+			rt.setAutoReverse(false);
+			setOnMouseEntered(evt -> rt.play() );
+			setOnMouseExited(evt -> {
+				rt.stop();
+				imgTank.setRotate(0);
+			});
+		}
 	}
 }

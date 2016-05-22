@@ -62,10 +62,7 @@ public class WhileBlock extends FluxControlBlock {
 		getChildren().add(layout);
 
 		// Header
-		Shape shapeToClip = createHeaderShape();
-		background.setClip(shapeToClip);
-		background.setFitWidth(getWidth());
-		background.setFitHeight(Constants.BLOCK_HEIGHT + 16d);
+		setupHeaderBackground(background);
 
 		StackPane headerBackgroundPane = new StackPane();
 		headerBackgroundPane.setMinSize(0, 0);

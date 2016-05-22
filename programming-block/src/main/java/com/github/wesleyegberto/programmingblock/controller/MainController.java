@@ -13,6 +13,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -63,11 +64,17 @@ public class MainController implements Initializable {
 		Block[] defaultCommands = {
 			// Comandos
 			new MovementCommandBlockBuilder().setTextImage("/images/texto_avancar.png")
-				.setCommandName("AVANÇAR").setCode("avancar(:param)").setTranslationX(0, 100)
-				.setHasParameter(true).setTemplate(true).build(),
+				.setCommandImage(Constants.TANK_IMAGE).setCommandName("AVANÇAR").setCode("avancar(:param)")
+				.setTranslationX(0, 100, 0, 0).setHasParameter(true).setTemplate(true).build(),
 			new MovementCommandBlockBuilder().setTextImage("/images/texto_recuar.png")
-				.setCommandName("RECUAR").setCode("recuar(:param)").setTranslationX(100, 0)
-				.setHasParameter(true).setTemplate(true).build(),
+				.setCommandImage(Constants.TANK_IMAGE).setCommandName("RECUAR").setCode("recuar(:param)")
+				.setTranslationX(100, 0, 0, 0).setHasParameter(true).setTemplate(true).build(),
+			new MovementCommandBlockBuilder().setTextImage("/images/texto_esquerda.png")
+				.setCommandImage(Constants.TANK_TOP_IMAGE).setCommandName("ESQUERDA").setCode("viraEsquerda()")
+				.setTranslationX(50, 50, 0, -90).setHasParameter(false).setTemplate(true).build(),
+			new MovementCommandBlockBuilder().setTextImage("/images/texto_direita.png")
+				.setCommandImage(Constants.TANK_TOP_IMAGE).setCommandName("DIREITA").setCode("viraDireita()")
+				.setTranslationX(50, 50, 0, 90).setHasParameter(false).setTemplate(true).build(),
 
 			// Parâmetros e Operandos
 			ValueParamBlock.createBuilder().setBackgroundImage("/images/param_value.png").setTemplate(true).build(),
@@ -141,10 +148,15 @@ public class MainController implements Initializable {
 				.build()
 		};
 		
-		
+		HBox boxRelationalOp = new HBox();
+		commandToolbox.getChildren().add(boxRelationalOp);
 		for (Block command : defaultCommands) {
 			addEventsForDraggableBlock(command);
-			commandToolbox.getChildren().add(command);
+			if(command instanceof RelationalOperatorBlock) {
+				boxRelationalOp.getChildren().add(command);
+			} else {
+				commandToolbox.getChildren().add(command);
+			}
 		}
 	}
 
