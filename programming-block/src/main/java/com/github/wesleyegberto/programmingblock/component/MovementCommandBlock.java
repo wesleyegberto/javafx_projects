@@ -83,6 +83,9 @@ public class MovementCommandBlock extends Block {
 
 	@Override
 	public String generateCode() {
+		if(hasParameter) {
+			return code.replace(":param", param.generateCode());
+		}
 		return code;
 	}
 

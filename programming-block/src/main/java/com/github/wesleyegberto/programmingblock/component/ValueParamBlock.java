@@ -30,7 +30,7 @@ public class ValueParamBlock extends ParamBlock {
 
 	@Override
 	public String generateCode() {
-		return null;
+		return combobox.getValue().toString();
 	}
 
 	@Override

@@ -81,12 +81,21 @@ public class MainController implements Initializable {
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_acende_led_verde.png")
 				.setDefaultImage("/images/acoes/led_verde.png").setNextImage("/images/acoes/led_apagado.png")
 				.setCode("acendeLedVerde()").setTemplate(true).build(),
+			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_apagar_led_verde.png")
+				.setDefaultImage("/images/acoes/led_apagado.png").setNextImage("/images/acoes/led_verde.png")
+				.setCode("apagaLedVerde()").setTemplate(true).build(),
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_acende_led_amarelo.png")
 				.setDefaultImage("/images/acoes/led_amarelo.png").setNextImage("/images/acoes/led_apagado.png")
 				.setCode("acendeLedAmarelo()").setTemplate(true).build(),
+			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_apagar_led_amarelo.png")
+				.setDefaultImage("/images/acoes/led_apagado.png").setNextImage("/images/acoes/led_amarelo.png")
+				.setCode("apagaLedAmarelo()").setTemplate(true).build(),
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_acende_led_vermelho.png")
 				.setDefaultImage("/images/acoes/led_vermelho.png").setNextImage("/images/acoes/led_apagado.png")
 				.setCode("acendeLedVermelho()").setTemplate(true).build(),
+			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_apagar_led_vermelho.png")
+				.setDefaultImage("/images/acoes/led_apagado.png").setNextImage("/images/acoes/led_vermelho.png")
+				.setCode("apagaLedVermelho()").setTemplate(true).build(),
 
 			// Parâmetros e Operandos
 			ValueParamBlock.createBuilder().setBackgroundImage("/images/param_value.png").setTemplate(true).build(),

@@ -11,8 +11,11 @@ import javafx.scene.shape.Shape;
  */
 public class CommandBlock extends Block {
 	private String textImagePath;
-	private String defaultImage;
-	private String nextImage;
+	private String defaultImageSrc;
+	private String nextImageSrc;
+
+	private Image defaultImage;
+	private Image nextImage;
 
 	private HBox layout;
 	private ImageView commandImg;
@@ -21,8 +24,8 @@ public class CommandBlock extends Block {
 						String code, boolean isTemplate) {
 		super(backgroundImage, code, Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT, isTemplate);
 		this.textImagePath = textImagePath;
-		this.defaultImage = defaultImage;
-		this.nextImage = nextImage;
+		this.defaultImageSrc = defaultImage;
+		this.nextImageSrc = nextImage;
 
 		setWidth(Constants.BLOCK_WIDTH);
 		setHeight(Constants.BLOCK_HEIGHT);
@@ -35,7 +38,7 @@ public class CommandBlock extends Block {
 	@Override
 	public CommandBlock cloneBlock() {
 		CommandBlock block = new CommandBlockBuilder().setBackgroundImage(backgroundPath).setTextImage(textImagePath)
-									.setDefaultImage(defaultImage).setNextImage(nextImage).setCode(code)
+									.setDefaultImage(defaultImageSrc).setNextImage(nextImageSrc).setCode(code)
 									.setTemplate(false).build();
 		block.startDragX = super.startDragX;
 		block.startDragY = super.startDragY;
@@ -71,9 +74,19 @@ public class CommandBlock extends Block {
 		imgTexto.setFitHeight(getHeight());
 		layout.getChildren().add(imgTexto);
 
-		// Tank
-		this.commandImg = new ImageView(new Image(getClass().getResourceAsStream(defaultImage)));
+		this.defaultImage = new Image(getClass().getResourceAsStream(defaultImageSrc));
+		this.nextImage = new Image(getClass().getResourceAsStream(nextImageSrc));
+
+		this.commandImg = new ImageView(defaultImage);
 		layout.getChildren().add(commandImg);
+
+		setOnMouseEntered(evt -> {
+			this.commandImg.setImage(nextImage);
+		});
+		setOnMouseExited(evt -> {
+			this.commandImg.setImage(defaultImage);
+		});
+
 	}
 
 	public static CommandBlockBuilder createBuilder() {
