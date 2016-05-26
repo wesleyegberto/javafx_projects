@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
@@ -35,4 +37,28 @@
          </content>
       </ScrollPane>
    </center>
+   <bottom>
+       <HBox alignment="CENTER_RIGHT" minHeight="80.0">
+         <children>
+            <Button mnemonicParsing="false" prefHeight="47.0" prefWidth="196.0" text="Limpar">
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <effect>
+                  <Glow />
+               </effect>
+            </Button>
+            <Button fx:id="btnCompile" alignment="CENTER" mnemonicParsing="false" prefHeight="47.0" prefWidth="196.0" text="Executar">
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+         </children></HBox>
+   </bottom>
 </BorderPane>
