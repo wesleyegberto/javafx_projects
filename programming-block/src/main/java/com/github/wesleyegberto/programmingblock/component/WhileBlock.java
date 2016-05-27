@@ -45,7 +45,7 @@ public class WhileBlock extends FluxControlBlock {
 	@Override
 	public WhileBlock cloneBlock() {
 		return new WhileBlock(headerBackgroundImage, leftBarBackgroundImage, footerBackgroundImage, textWhileImage, textDoImage,
-			operandImage, getWidth(), getHeight(), false);
+			operandImage, originalWidth, originalHeight, false);
 	}
 
 	@Override
@@ -56,6 +56,10 @@ public class WhileBlock extends FluxControlBlock {
 	@Override
 	protected void createBlock() {
 		setCursor(Cursor.DEFAULT);
+
+		double factoredWidth = applyFactor(Constants.BLOCK_WIDTH);
+		double factoredHeight = applyFactor(Constants.BLOCK_HEIGHT);
+
 		// Layout para os componentes interno
 		layout = new BorderPane();
 		layout.setMinWidth(getWidth());
@@ -67,7 +71,7 @@ public class WhileBlock extends FluxControlBlock {
 		StackPane headerBackgroundPane = new StackPane();
 		headerBackgroundPane.setMinSize(0, 0);
 		headerBackgroundPane.setAlignment(Pos.CENTER_LEFT);
-		headerBackgroundPane.setMaxHeight(Constants.BLOCK_HEIGHT + 16d);
+		headerBackgroundPane.setMaxHeight(factoredHeight + connectionBottomPad);
 		headerBackgroundPane.getChildren().add(background);
 
 		headerLayout = new HBox();
@@ -75,10 +79,17 @@ public class WhileBlock extends FluxControlBlock {
 
 		// While
 		ImageView textImageView = new ImageView(new Image(getClass().getResourceAsStream(textWhileImage)));
+		if(isTemplate()) {
+			textImageView.setFitWidth(applyFactor(textImageView.getImage().getWidth()));
+			textImageView.setFitHeight(applyFactor(textImageView.getImage().getHeight()));
+		}
 		headerLayout.getChildren().add(textImageView);
 
 		ImageView firstOperandImgVw = new ImageView(new Image(getClass().getResourceAsStream(operandImage)));
-		firstOperandImgVw.setFitHeight(Constants.BLOCK_HEIGHT);
+		firstOperandImgVw.setFitHeight(factoredHeight);
+		if(isTemplate()) {
+			firstOperandImgVw.setFitWidth(applyFactor(firstOperandImgVw.getImage().getWidth()));
+		}
 		if(!isTemplate()) {
 			firstOperandImgVw.setOnMouseDragReleased(evt -> {
 				Clipboard clipboard = Clipboard.getInstance();
@@ -94,7 +105,10 @@ public class WhileBlock extends FluxControlBlock {
 		headerLayout.getChildren().add(firstOperandImgVw);
 
 		ImageView operatorImgVw = new ImageView(new Image(getClass().getResourceAsStream(operandImage)));
-		operatorImgVw.setFitHeight(Constants.BLOCK_HEIGHT);
+		operatorImgVw.setFitHeight(factoredHeight);
+		if(isTemplate()) {
+			operatorImgVw.setFitWidth(applyFactor(operatorImgVw.getImage().getWidth()));
+		}
 		if(!isTemplate()) {
 			operatorImgVw.setOnMouseDragReleased(evt -> {
 				Clipboard clipboard = Clipboard.getInstance();
@@ -111,9 +125,11 @@ public class WhileBlock extends FluxControlBlock {
 		}
 		headerLayout.getChildren().add(operatorImgVw);
 
-
 		ImageView secondOperandImgVw = new ImageView(new Image(getClass().getResourceAsStream(operandImage)));
-		secondOperandImgVw.setFitHeight(Constants.BLOCK_HEIGHT);
+		secondOperandImgVw.setFitHeight(factoredHeight);
+		if(isTemplate()) {
+			secondOperandImgVw.setFitWidth(applyFactor(secondOperandImgVw.getImage().getWidth()));
+		}
 		if(!isTemplate()) {
 			secondOperandImgVw.setOnMouseDragReleased(evt -> {
 				Clipboard clipboard = Clipboard.getInstance();
@@ -130,13 +146,17 @@ public class WhileBlock extends FluxControlBlock {
 
 		// Then
 		textImageView = new ImageView(new Image(getClass().getResourceAsStream(textDoImage)));
+		if(isTemplate()) {
+			textImageView.setFitWidth(applyFactor(textImageView.getImage().getWidth()));
+			textImageView.setFitHeight(applyFactor(textImageView.getImage().getHeight()));
+		}
 		headerLayout.getChildren().add(textImageView);
 
 		layout.setTop(headerBackgroundPane);
 
 		// Center
 		boxCode = new VBox(0.0);
-		boxCode.setMinSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
+		boxCode.setMinSize(factoredWidth, factoredHeight);
 		layout.setCenter(boxCode);
 
 		// Left

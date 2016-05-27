@@ -6,7 +6,7 @@ package com.github.wesleyegberto.programmingblock.component;
 public abstract class ParamBlock extends Block {
 
 	public ParamBlock(String backgroundImage, String code, double width, double height, boolean isTemplate) {
-		super(backgroundImage, code, width, height, isTemplate);
+		super(backgroundImage, code, isTemplate, width, height);
 		setMinSize(width, height);
 		setPrefSize(width, height);
 		setMaxSize(width, height);

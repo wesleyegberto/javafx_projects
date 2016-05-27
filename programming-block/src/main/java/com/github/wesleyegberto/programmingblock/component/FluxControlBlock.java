@@ -17,8 +17,6 @@ import java.util.List;
  * @author Wesley Egberto on 21/04/16.
  */
 public abstract class FluxControlBlock extends Block {
-
-	protected static final double LEFT_BAR_MIN_HEIGHT = 80d;
 	protected static final double LEFT_BAR_WIDTH = 20d;
 
 	protected BorderPane layout;
@@ -29,9 +27,10 @@ public abstract class FluxControlBlock extends Block {
 	protected List<Block> listInternalCommands = new ArrayList<>();
 	
 	public FluxControlBlock(String backgroundImage, String code, double width, double height, boolean isTemplate) {
-		super(backgroundImage, code, width, height, isTemplate);
-		setMinSize(width, height);
-		setWidth(width);
+		super(backgroundImage, code, isTemplate, width, height);
+
+		setMinSize(applyFactor(width), applyFactor(height));
+		setWidth(applyFactor(width));
 	}
 
 	public VBox getBoxCode() {
@@ -39,7 +38,6 @@ public abstract class FluxControlBlock extends Block {
 	}
 
 	public void addBlock(Block newBlock) {
-		//System.out.println("\tDropped at FluxControlBlock");
 		this.listInternalCommands.add(newBlock);
 		boxCode.getChildren().add(newBlock);
 	}
@@ -49,7 +47,6 @@ public abstract class FluxControlBlock extends Block {
 			addBlock(newBlock);
 		} else {
 			int index = boxCode.getChildren().indexOf(block);
-			//System.out.println("\tDropped in FluxControlBlock at: " + index);
 			if (index >= 0) {
 				boxCode.getChildren().add(index + 1, newBlock);
 			} else {
@@ -59,17 +56,16 @@ public abstract class FluxControlBlock extends Block {
 	}
 
 	public void removeBlock(Block block) {
-		//System.out.print("Removing " + block + " from " + this + ": ");
 		listInternalCommands.remove(block);
 		System.out.println(boxCode.getChildren().remove(block));
 	}
 
 	protected Shape createHeaderShape() {
 		// Retângulo com a barra esquerda
-		Rectangle rectConnection = createRectangle(0, Constants.BLOCK_HEIGHT - connectionHeight, LEFT_BAR_WIDTH, connectionHeight * 3);
+		Rectangle rectConnection = createRectangle(0, applyFactor(Constants.BLOCK_HEIGHT) - connectionHeight, LEFT_BAR_WIDTH, connectionHeight * 3);
 		rectConnection.setArcHeight(0d);
 		rectConnection.setArcWidth(0d);
-		Shape shapeToClip = Shape.union(createRectangle(0, 0, getWidth(), Constants.BLOCK_HEIGHT), rectConnection);
+		Shape shapeToClip = Shape.union(createRectangle(0, 0, getWidth(), applyFactor(Constants.BLOCK_HEIGHT)), rectConnection);
 		shapeToClip = Shape.subtract(shapeToClip, createTriangleToRemove(connectionLeftPad));
 		//shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad + LEFT_BAR_WIDTH, Constants.BLOCK_HEIGHT));
 		return shapeToClip;
@@ -80,7 +76,7 @@ public abstract class FluxControlBlock extends Block {
 		Rectangle rectConnection = createRectangle(0, -connectionHeight, LEFT_BAR_WIDTH, connectionHeight * 3);
 		rectConnection.setArcHeight(0d);
 		rectConnection.setArcWidth(0d);
-		Shape shapeToClip = Shape.union(rectConnection, createRectangle(0, 0, getWidth(), Constants.BLOCK_HEIGHT));
+		Shape shapeToClip = Shape.union(rectConnection, createRectangle(0, 0, getWidth(), applyFactor(Constants.BLOCK_HEIGHT)));
 		shapeToClip = Shape.subtract(shapeToClip, createTriangleToRemove(connectionLeftPad + LEFT_BAR_WIDTH));
 		//shapeToClip = Shape.union(shapeToClip, createTriangleToAdd(connectionLeftPad, Constants.BLOCK_HEIGHT));
 		return shapeToClip;
@@ -89,7 +85,7 @@ public abstract class FluxControlBlock extends Block {
 	protected ImageViewPane createFooterImageViewPaneFromResource(String imageFromResource) {
 		ImageView leftBackground = new ImageView(new Image(getClass().getResourceAsStream(imageFromResource)));
 		leftBackground.setFitWidth(LEFT_BAR_WIDTH);
-		leftBackground.setFitHeight(LEFT_BAR_MIN_HEIGHT);
+		leftBackground.setFitHeight(applyFactor(Constants.BLOCK_HEIGHT));
 		return new ImageViewPane(leftBackground);
 	}
 
@@ -97,7 +93,7 @@ public abstract class FluxControlBlock extends Block {
 		Shape shapeToClip = createHeaderShape();
 		background.setClip(shapeToClip);
 		background.setFitWidth(getWidth());
-		background.setFitHeight(Constants.BLOCK_HEIGHT/* + 16d*/);
+		background.setFitHeight(applyFactor(Constants.BLOCK_HEIGHT)/* + 16d*/);
 	}
 
 	protected ImageView createFooterFromResource(String imageFromResource) {
@@ -105,18 +101,18 @@ public abstract class FluxControlBlock extends Block {
 		ImageView footerBackground = new ImageView(new Image(getClass().getResourceAsStream(imageFromResource)));
 		footerBackground.setClip(shapeToClip);
 		footerBackground.setFitWidth(getWidth());
-		footerBackground.setFitHeight(Constants.BLOCK_HEIGHT/* + 16d*/);
+		footerBackground.setFitHeight(applyFactor(Constants.BLOCK_HEIGHT)/* + 16d*/);
 		return footerBackground;
 	}
 
 	protected void updateBlock() {
 		// Retângulo com a barra esquerda
-		Rectangle rectConnection = createRectangle(0, Constants.BLOCK_HEIGHT - connectionHeight, LEFT_BAR_WIDTH, connectionHeight * 3);
+		Rectangle rectConnection = createRectangle(0, applyFactor(Constants.BLOCK_HEIGHT) - connectionHeight, LEFT_BAR_WIDTH, connectionHeight * 3);
 		rectConnection.setArcHeight(0d);
 		rectConnection.setArcWidth(0d);
-		Shape blockNewClip = Shape.union(createRectangle(0, 0, getWidth(), Constants.BLOCK_HEIGHT), rectConnection);
+		Shape blockNewClip = Shape.union(createRectangle(0, 0, getWidth(), applyFactor(Constants.BLOCK_HEIGHT)), rectConnection);
 		blockNewClip = Shape.subtract(blockNewClip, createTriangleToRemove(50d));
-		blockNewClip = Shape.union(blockNewClip, createTriangleToAdd(50d, Constants.BLOCK_HEIGHT));
+		blockNewClip = Shape.union(blockNewClip, createTriangleToAdd(50d, applyFactor(Constants.BLOCK_HEIGHT)));
 		background.setClip(blockNewClip);
 		background.setFitWidth(getWidth());
 	}

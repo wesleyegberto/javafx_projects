@@ -22,15 +22,15 @@ public class CommandBlock extends Block {
 
 	public CommandBlock(String backgroundImage, String textImagePath, String defaultImage, String nextImage,
 						String code, boolean isTemplate) {
-		super(backgroundImage, code, Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT, isTemplate);
+		super(backgroundImage, code, isTemplate, Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
 		this.textImagePath = textImagePath;
 		this.defaultImageSrc = defaultImage;
 		this.nextImageSrc = nextImage;
 
-		setWidth(Constants.BLOCK_WIDTH);
-		setHeight(Constants.BLOCK_HEIGHT);
-		setMinSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
-		setPrefSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
+		setWidth(applyFactor(Constants.BLOCK_WIDTH));
+		setHeight(applyFactor(Constants.BLOCK_HEIGHT));
+		setMinSize(applyFactor(Constants.BLOCK_WIDTH), applyFactor(Constants.BLOCK_HEIGHT));
+		setPrefSize(applyFactor(Constants.BLOCK_WIDTH), applyFactor(Constants.BLOCK_HEIGHT));
 
 		createBlock();
 	}
@@ -59,7 +59,7 @@ public class CommandBlock extends Block {
 
 		background.setClip(blockClip);
 		background.setFitWidth(getWidth());
-		background.setFitHeight(getHeight() + 16d);
+		background.setFitHeight(getHeight() + connectionBottomPad);
 		background.setCursor(Cursor.CLOSED_HAND);
 
 		getChildren().add(background);
@@ -72,19 +72,30 @@ public class CommandBlock extends Block {
 		// Texto do comando
 		ImageView imgTexto = new ImageView(new Image(getClass().getResourceAsStream(textImagePath)));
 		imgTexto.setFitHeight(getHeight());
+		imgTexto.setCursor(Cursor.HAND);
+		if(isTemplate()) {
+			imgTexto.setFitWidth(applyFactor(imgTexto.getImage().getWidth()));
+		}
 		layout.getChildren().add(imgTexto);
 
 		this.defaultImage = new Image(getClass().getResourceAsStream(defaultImageSrc));
 		this.nextImage = new Image(getClass().getResourceAsStream(nextImageSrc));
 
 		this.commandImg = new ImageView(defaultImage);
+		commandImg.setCursor(Cursor.HAND);
+		if(isTemplate()) {
+			commandImg.setFitHeight(getHeight());
+			commandImg.setFitWidth(applyFactor(defaultImage.getWidth()));
+		}
 		layout.getChildren().add(commandImg);
 
 		setOnMouseEntered(evt -> {
-			this.commandImg.setImage(nextImage);
+			commandImg.setImage(nextImage);
+			commandImg.setFitWidth(applyFactor(nextImage.getWidth()));
 		});
 		setOnMouseExited(evt -> {
-			this.commandImg.setImage(defaultImage);
+			commandImg.setImage(defaultImage);
+			commandImg.setFitWidth(applyFactor(defaultImage.getWidth()));
 		});
 
 	}

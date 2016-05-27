@@ -15,6 +15,7 @@ import javafx.scene.shape.Shape;
  * @author Wesley
  */
 public abstract class Block extends Region {
+	public static final double TEMPLATE_FACTOR_SIZE = 0.7;
 	private static int commonId = 1;
 	protected int id;
 	
@@ -25,6 +26,7 @@ public abstract class Block extends Region {
 	protected double connectionLeftPad = 50d;
 	protected double connectionWidth = 20d;
 	protected double connectionHeight = 10d;
+	protected double connectionBottomPad = 16d;
 
 	// Atributos para controle do drag-n-drop
 	protected double startDragX;
@@ -33,17 +35,29 @@ public abstract class Block extends Region {
 
 	private final boolean isTemplate;
 
-	public Block(String backgroundPath, String code, double width, double height, boolean isTemplate) {
+	// Atributos para os tamanhos originais
+	protected double originalWidth;
+	protected double originalHeight;
+
+	public Block(String backgroundPath, String code, boolean isTemplate, double originalWidth, double originalHeight) {
 		id = commonId++;
 		this.backgroundPath = backgroundPath;
 		this.code = code;
 		this.isTemplate = isTemplate;
+		this.originalWidth = originalWidth;
+		this.originalHeight = originalHeight;
 
-		setCursor(Cursor.HAND);
+		// Se for Template então aplica os fatores para diminuir a imagem
+		connectionLeftPad = applyFactor(connectionLeftPad);
+		connectionWidth = applyFactor(connectionWidth);
+		connectionHeight = applyFactor(connectionHeight);
+		connectionBottomPad = applyFactor(connectionBottomPad);
 
 		// carrega o fundo do bloco
 		Image backgroundImage = new Image(getClass().getResourceAsStream(backgroundPath));
 		this.background = new ImageView(backgroundImage);
+
+		setCursor(Cursor.HAND);
 	}
 	
 	public boolean isTemplate() {
@@ -54,14 +68,14 @@ public abstract class Block extends Region {
 		this.dragAnchor = new Point2D(sceneX, sceneY);
 	}
 
-	public abstract <T extends Block> T cloneBlock();
-
 	/**
-	 * Retorna o código que é gerado a partir dos blocos.
+	 * Aplica um fator na medida recebida.
+	 * @param x medida para aplicar fator
+	 * @return medida redimensionada
 	 */
-	public abstract String generateCode();
-
-	protected abstract void createBlock();
+	public double applyFactor(double x) {
+		return x * (isTemplate() ? TEMPLATE_FACTOR_SIZE : 1);
+	}
 
 	protected void updateBlock() {
 		Shape blockNewClip = createRectangle(0, 0, getWidth(), getHeight());
@@ -114,4 +128,13 @@ public abstract class Block extends Region {
 	public String toString() {
 		return "[" + getClass().getSimpleName() + "{id:" + id + "}" + "]";
 	}
+
+	public abstract <T extends Block> T cloneBlock();
+
+	/**
+	 * Retorna o código que é gerado a partir dos blocos.
+	 */
+	public abstract String generateCode();
+
+	protected abstract void createBlock();
 }

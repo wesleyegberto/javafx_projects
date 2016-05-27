@@ -61,6 +61,11 @@ public class ForBlock extends FluxControlBlock {
 	@Override
 	protected void createBlock() {
 		setCursor(Cursor.DEFAULT);
+		setCursor(Cursor.DEFAULT);
+
+		double factoredWidth = applyFactor(Constants.BLOCK_WIDTH);
+		double factoredHeight = applyFactor(Constants.BLOCK_HEIGHT);
+
 		// Layout para os componentes interno
 		layout = new BorderPane();
 		layout.setMinWidth(getWidth());
@@ -72,18 +77,25 @@ public class ForBlock extends FluxControlBlock {
 		StackPane headerBackgroundPane = new StackPane();
 		headerBackgroundPane.setMinSize(0, 0);
 		headerBackgroundPane.setAlignment(Pos.CENTER_LEFT);
-		headerBackgroundPane.setMaxHeight(Constants.BLOCK_HEIGHT/* + 16d*/);
+		headerBackgroundPane.setMaxHeight(factoredHeight/* + 16d*/);
 		headerBackgroundPane.getChildren().add(background);
 
 		headerLayout = new HBox();
 		headerBackgroundPane.getChildren().add(headerLayout);
 
 		// For
-		ImageView textForImgVw = new ImageView(new Image(getClass().getResourceAsStream(textForImage)));
-		headerLayout.getChildren().add(textForImgVw);
+		ImageView textImgVw = new ImageView(new Image(getClass().getResourceAsStream(textForImage)));
+		if(isTemplate()) {
+			textImgVw.setFitWidth(applyFactor(textImgVw.getImage().getWidth()));
+			textImgVw.setFitHeight(applyFactor(textImgVw.getImage().getHeight()));
+		}
+		headerLayout.getChildren().add(textImgVw);
 
 		ImageView initialValueImgVw = new ImageView(new Image(getClass().getResourceAsStream(operandImage)));
-		initialValueImgVw.setFitHeight(Constants.BLOCK_HEIGHT);
+		initialValueImgVw.setFitHeight(factoredHeight);
+		if(isTemplate()) {
+			initialValueImgVw.setFitWidth(applyFactor(initialValueImgVw.getImage().getWidth()));
+		}
 		if(!isTemplate()) {
 			initialValueImgVw.setOnMouseDragReleased(evt -> {
 				Clipboard clipboard = Clipboard.getInstance();
@@ -99,11 +111,18 @@ public class ForBlock extends FluxControlBlock {
 		headerLayout.getChildren().add(initialValueImgVw);
 
 		// To
-		ImageView textToImgVw = new ImageView(new Image(getClass().getResourceAsStream(textToImage)));
-		headerLayout.getChildren().add(textToImgVw);
+		textImgVw = new ImageView(new Image(getClass().getResourceAsStream(textToImage)));
+		if(isTemplate()) {
+			textImgVw.setFitWidth(applyFactor(textImgVw.getImage().getWidth()));
+			textImgVw.setFitHeight(applyFactor(textImgVw.getImage().getHeight()));
+		}
+		headerLayout.getChildren().add(textImgVw);
 
 		ImageView finalValueImgVw = new ImageView(new Image(getClass().getResourceAsStream(operandImage)));
-		finalValueImgVw.setFitHeight(Constants.BLOCK_HEIGHT);
+		finalValueImgVw.setFitHeight(factoredHeight);
+		if(isTemplate()) {
+			finalValueImgVw.setFitWidth(applyFactor(finalValueImgVw.getImage().getWidth()));
+		}
 		if(!isTemplate()) {
 			finalValueImgVw.setOnMouseDragReleased(evt -> {
 				Clipboard clipboard = Clipboard.getInstance();
@@ -119,14 +138,18 @@ public class ForBlock extends FluxControlBlock {
 		headerLayout.getChildren().add(finalValueImgVw);
 
 		// Do
-		textForImgVw = new ImageView(new Image(getClass().getResourceAsStream(textDoImage)));
-		headerLayout.getChildren().add(textForImgVw);
+		textImgVw = new ImageView(new Image(getClass().getResourceAsStream(textDoImage)));
+		if(isTemplate()) {
+			textImgVw.setFitWidth(applyFactor(textImgVw.getImage().getWidth()));
+			textImgVw.setFitHeight(applyFactor(textImgVw.getImage().getHeight()));
+		}
+		headerLayout.getChildren().add(textImgVw);
 
 		layout.setTop(headerBackgroundPane);
 
 		// Center
 		boxCode = new VBox(0.0);
-		boxCode.setMinSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
+		boxCode.setMinSize(factoredWidth, factoredHeight);
 		layout.setCenter(boxCode);
 
 		// Left

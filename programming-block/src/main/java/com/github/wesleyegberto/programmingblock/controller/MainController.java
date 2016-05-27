@@ -41,6 +41,8 @@ public class MainController implements Initializable {
 
 	private BorderPane sceneRoot;
 
+	private ProgramBlock rootBlock;
+
 	public void setScene(Scene scene) {
 		sceneRoot = ((BorderPane) scene.getRoot());
 	}
@@ -57,7 +59,7 @@ public class MainController implements Initializable {
 				.setLeftBackgroundImage("/images/programa/left_bar_programa.png")
 				.setFooterBackgroundImage("/images/programa/footer_programa.png")
 				.setTextImagePath("/images/programa/texto_programa.png")
-				.setIsTemplate(true).build();
+				.build();
 		boxCode.getChildren().add(programBlock);
 
 		initializeDragEventsTarget(programBlock);
@@ -169,7 +171,7 @@ public class MainController implements Initializable {
 				.build()
 		};
 
-		HBox boxRelationalOp = new HBox();
+		HBox boxRelationalOp = new HBox(5);
 		HBox boxOperands = new HBox();
 		VBox boxMovementCommands = new VBox(5);
 		VBox boxActionCommands = new VBox(5);

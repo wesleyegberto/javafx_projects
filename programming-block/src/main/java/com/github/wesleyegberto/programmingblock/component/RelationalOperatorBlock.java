@@ -14,22 +14,22 @@ public class RelationalOperatorBlock extends Block {
 	private final RelationalOperatorType type;
 
 	public RelationalOperatorBlock(String backgroundImage, String operationImage, double width, double height, boolean isTemplate, RelationalOperatorType type) {
-		super(backgroundImage, null, width, height, isTemplate);
+		super(backgroundImage, type.getType(), isTemplate, width, height);
 		this.operationImage = operationImage;
 		this.type = type;
 
-		setWidth(width);
-		setHeight(height);
-		setMinSize(width, height);
-		setPrefSize(width, height);
-		setMaxSize(width, height);
+		setWidth(applyFactor(width));
+		setHeight(applyFactor(height));
+		setMinSize(applyFactor(width), applyFactor(height));
+		setPrefSize(applyFactor(width), applyFactor(height));
+		setMaxSize(applyFactor(width), applyFactor(height));
 
 		createBlock();
 	}
 
 	@Override
 	public RelationalOperatorBlock cloneBlock() {
-		RelationalOperatorBlock block = new RelationalOperatorBlock(backgroundPath, operationImage, getWidth(), getHeight(), isTemplate(), type);
+		RelationalOperatorBlock block = new RelationalOperatorBlock(backgroundPath, operationImage, originalWidth, originalHeight, false, type);
 		block.startDragX = super.startDragX;
 		block.startDragY = super.startDragY;
 		block.dragAnchor = super.dragAnchor;
@@ -51,6 +51,7 @@ public class RelationalOperatorBlock extends Block {
 
 		// Texto da operação
 		ImageView imgTexto = new ImageView(new Image(getClass().getResourceAsStream(operationImage)));
+		imgTexto.setFitWidth(getWidth());
 		imgTexto.setFitHeight(getHeight());
 
 		StackPane pane = new StackPane();
@@ -73,7 +74,7 @@ public class RelationalOperatorBlock extends Block {
 		private String backgroundImage;
 		private String operationImage;
 		private double width = 70d;
-		private double height = 80d;
+		private double height = Constants.BLOCK_HEIGHT;
 		private boolean isTemplate;
 		private RelationalOperatorType type;
 

@@ -38,26 +38,26 @@ public class MovementCommandBlock extends Block {
 
 	public MovementCommandBlock(String backgroundImage, String textImagePath, String commandName, String commandImage,
 						String code, boolean isTemplate, boolean hasParameter) {
-		super(backgroundImage, code, Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT, isTemplate);
+		super(backgroundImage, code, isTemplate, Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
 		this.commandName = commandName;
 		this.textImagePath = textImagePath;
 		this.commandImage = commandImage;
 		this.hasParameter = hasParameter;
 
-		setWidth(Constants.BLOCK_WIDTH);
-		setHeight(Constants.BLOCK_HEIGHT);
-		setMinSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
-		setPrefSize(Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
+		setWidth(applyFactor(Constants.BLOCK_WIDTH));
+		setHeight(applyFactor(Constants.BLOCK_HEIGHT));
+		setMinSize(applyFactor(Constants.BLOCK_WIDTH), applyFactor(Constants.BLOCK_HEIGHT));
+		setPrefSize(applyFactor(Constants.BLOCK_WIDTH), applyFactor(Constants.BLOCK_HEIGHT));
 
 		createBlock();
 	}
 
 	public void setStartTranslation(double startTranslation) {
-		this.startTranslation = startTranslation;
+		this.startTranslation = applyFactor(startTranslation);
 	}
 
 	public void setEndTranslation(double endTranslation) {
-		this.endTranslation = endTranslation;
+		this.endTranslation = applyFactor(endTranslation);
 	}
 
 	public void setStartAngle(double startAngle) {
@@ -97,7 +97,7 @@ public class MovementCommandBlock extends Block {
 
 		background.setClip(blockClip);
 		background.setFitWidth(getWidth());
-		background.setFitHeight(getHeight() + 16d);
+		background.setFitHeight(getHeight() + connectionBottomPad);
 		background.setCursor(Cursor.CLOSED_HAND);
 
 		getChildren().add(background);
@@ -110,11 +110,20 @@ public class MovementCommandBlock extends Block {
 		// Texto do comando
 		ImageView imgTexto = new ImageView(new Image(getClass().getResourceAsStream(textImagePath)));
 		imgTexto.setFitHeight(getHeight());
+		imgTexto.setCursor(Cursor.HAND);
+		if(isTemplate()) {
+			imgTexto.setFitWidth(applyFactor(imgTexto.getImage().getWidth()));
+		}
 		layout.getChildren().add(imgTexto);
 
 		// Espaço para o parâmetro
 		if(hasParameter) {
 			ImageView imgParam = new ImageView(new Image(getClass().getResourceAsStream(Constants.PARAM_IMAGE)));
+			imgParam.setFitHeight(getHeight());
+			imgParam.setCursor(Cursor.HAND);
+			if(isTemplate()) {
+				imgParam.setFitWidth(applyFactor(imgParam.getImage().getWidth()));
+			}
 			if(!isTemplate()) {
 				imgParam.setOnMouseDragReleased(evt -> {
 					Clipboard clipboard = Clipboard.getInstance();
@@ -143,7 +152,12 @@ public class MovementCommandBlock extends Block {
 		}
 
 		// Tank
-		this.imgTank = new ImageView(new Image(getClass().getResourceAsStream(commandImage)));
+		imgTank = new ImageView(new Image(getClass().getResourceAsStream(commandImage)));
+		imgTank.setFitHeight(getHeight());
+		imgTank.setCursor(Cursor.HAND);
+		if(isTemplate()) {
+			imgTank.setFitWidth(applyFactor(imgTank.getImage().getWidth()));
+		}
 		layout.getChildren().add(imgTank);
 
 	}
