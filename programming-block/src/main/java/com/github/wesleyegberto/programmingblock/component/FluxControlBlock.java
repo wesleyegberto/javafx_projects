@@ -63,6 +63,15 @@ public abstract class FluxControlBlock extends Block {
 		listInternalCommands.remove(block);
 	}
 
+	public void cleanBlocks() {
+		boxCode.getChildren().clear();
+		listInternalCommands.forEach(block -> {
+			if(block instanceof FluxControlBlock)
+				((FluxControlBlock) block).cleanBlocks();
+		});
+		listInternalCommands.clear();
+	}
+
 	protected Shape createHeaderShape() {
 		// Retângulo com a barra esquerda
 		Rectangle rectConnection = createRectangle(0, applyFactor(Constants.BLOCK_HEIGHT) - connectionHeight, LEFT_BAR_WIDTH, connectionHeight * 3);

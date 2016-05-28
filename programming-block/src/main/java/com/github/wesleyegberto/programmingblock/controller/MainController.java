@@ -346,7 +346,11 @@ public class MainController implements Initializable {
 		return newBlock;
 	}
 
-	public void executaCompilacao() {
+	public void cleanCode() {
+		rootBlock.cleanBlocks();
+	}
+
+	public void executeCode() {
 		System.out.println(rootBlock.generateCode());
 	}
 }

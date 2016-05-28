@@ -40,7 +40,7 @@
    <bottom>
        <HBox alignment="CENTER_RIGHT" minHeight="80.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="47.0" prefWidth="196.0" text="Limpar">
+            <Button fx:id="btnClean" onAction="#cleanCode" mnemonicParsing="false" prefHeight="47.0" prefWidth="196.0" text="Limpar">
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
@@ -51,7 +51,7 @@
                   <Glow />
                </effect>
             </Button>
-            <Button fx:id="btnCompile" onAction="#executaCompilacao" alignment="CENTER" mnemonicParsing="false" prefHeight="47.0" prefWidth="196.0" text="Executar">
+            <Button fx:id="btnCompile" onAction="#executeCode" alignment="CENTER" mnemonicParsing="false" prefHeight="47.0" prefWidth="196.0" text="Executar">
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
