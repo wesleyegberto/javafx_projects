@@ -12,10 +12,7 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseDragEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
@@ -50,19 +47,19 @@ public class MainController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		paneCode.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		VBox.setVgrow(paneCode, Priority.ALWAYS);
-		commandToolbox.setSpacing(5);
+		VBox.setVgrow(paneCode, Priority.SOMETIMES);
+		commandToolbox.setSpacing(0);
 
 		// Criação do bloco principal
-		ProgramBlock programBlock = ProgramBlock.createBuilder()
+		rootBlock = ProgramBlock.createBuilder()
 				.setHeaderBackgroundImage("/images/programa/header_programa.png")
 				.setLeftBackgroundImage("/images/programa/left_bar_programa.png")
 				.setFooterBackgroundImage("/images/programa/footer_programa.png")
 				.setTextImagePath("/images/programa/texto_programa.png")
 				.build();
-		boxCode.getChildren().add(programBlock);
+		boxCode.getChildren().add(rootBlock);
 
-		initializeDragEventsTarget(programBlock);
+		initializeDragEventsTarget(rootBlock);
 		
 		Block[] defaultCommands = {
 			// Comandos de movimentos
@@ -105,21 +102,6 @@ public class MainController implements Initializable {
 				.setBackgroundImage("/images/funcao_medir_distancia.png").setWidth(130d)
 				.setTemplate(true).setFunctionName("medirDistancia").build(),
 
-			// Operadores
-			/*
-			RelationalOperatorBlock.createBuilder()
-				.setBackgroundImage("/images/param_comando.png").setOperationImage("/images/operacao_adicao.png")
-				.setTemplate(true).setType(RelationalOperatorBlock.OperatorType.ADDITION).build(),
-			RelationalOperatorBlock.createBuilder()
-				.setBackgroundImage("/images/param_comando.png").setOperationImage("/images/operacao_subtracao.png")
-				.setTemplate(true).setType(RelationalOperatorBlock.OperatorType.SUBTRACTION).build(),
-			RelationalOperatorBlock.createBuilder()
-				.setBackgroundImage("/images/param_comando.png").setOperationImage("/images/operacao_multiplicacao.png")
-				.setTemplate(true).setType(RelationalOperatorBlock.OperatorType.MULTIPLICATION).build(),
-			RelationalOperatorBlock.createBuilder()
-				.setBackgroundImage("/images/param_comando.png").setOperationImage("/images/operacao_divisao.png")
-				.setTemplate(true).setType(RelationalOperatorBlock.OperatorType.DIVISION).build(),
-			*/
 			// Operadores relacionais
 			RelationalOperatorBlock.createBuilder()
 				.setBackgroundImage("/images/param_comando.png").setOperationImage("/images/operador_maior.png")
@@ -150,15 +132,6 @@ public class MainController implements Initializable {
 				.setOperandImage("/images/param_comando.png")
 				.setTemplate(true)
 				.build(),
-			WhileBlock.createBuilder()
-				.setHeaderBackground("/images/enquanto/header.png")
-				.setLeftBarBackground("/images/enquanto/left_bar.png")
-				.setFooterBackground("/images/enquanto/footer.png")
-				.setTextWhileImage("/images/enquanto/texto_enquanto.png")
-				.setTextDoImage("/images/enquanto/texto_faca.png")
-				.setOperandImage("/images/param_comando.png")
-				.setTemplate(true)
-				.build(),
 			ForBlock.createBuilder()
 				.setHeaderBackground("/images/para/header.png")
 				.setLeftBarBackground("/images/para/left_bar.png")
@@ -168,20 +141,33 @@ public class MainController implements Initializable {
 				.setTextDoImage("/images/para/texto_faca.png")
 				.setOperandImage("/images/param_comando.png")
 				.setTemplate(true)
-				.build()
+				.build(),
+			WhileBlock.createBuilder()
+				.setHeaderBackground("/images/enquanto/header.png")
+				.setLeftBarBackground("/images/enquanto/left_bar.png")
+				.setFooterBackground("/images/enquanto/footer.png")
+				.setTextWhileImage("/images/enquanto/texto_enquanto.png")
+				.setTextDoImage("/images/enquanto/texto_faca.png")
+				.setOperandImage("/images/param_comando.png")
+				.setTemplate(true)
+				.build(),
 		};
 
 		HBox boxRelationalOp = new HBox(5);
 		HBox boxOperands = new HBox();
-		VBox boxMovementCommands = new VBox(5);
-		VBox boxActionCommands = new VBox(5);
-		VBox boxFlux = new VBox(5);
+		//VBox boxMovementCommands = new VBox(5);
+		//VBox boxActionCommands = new VBox(5);
+		FlowPane paneCommands = new FlowPane(5.0, 5.0);
+		paneCommands.setMaxWidth(500);
+		paneCommands.setPrefWrapLength(500.0);
+		//VBox boxFlux = new VBox(5);
 
 		commandToolbox.getChildren().add(boxRelationalOp);
 		commandToolbox.getChildren().add(boxOperands);
-		commandToolbox.getChildren().add(boxMovementCommands);
-		commandToolbox.getChildren().add(boxActionCommands);
-		commandToolbox.getChildren().add(boxFlux);
+		//commandToolbox.getChildren().add(boxMovementCommands);
+		//commandToolbox.getChildren().add(boxActionCommands);
+		commandToolbox.getChildren().add(paneCommands);
+		//commandToolbox.getChildren().add(boxFlux);
 
 		for (Block command : defaultCommands) {
 			addEventsForDraggableBlock(command);
@@ -189,14 +175,9 @@ public class MainController implements Initializable {
 				boxRelationalOp.getChildren().add(command);
 			} else if(command instanceof ParamBlock) {
 				boxOperands.getChildren().add(command);
-			} else if(command instanceof MovementCommandBlock) {
-				boxMovementCommands.getChildren().add(command);
-			} else if(command instanceof CommandBlock) {
-				boxActionCommands.getChildren().add(command);
-			} else if(command instanceof FluxControlBlock) {
-				boxFlux.getChildren().add(command);
-			} else {
-				commandToolbox.getChildren().add(command);
+			} else if(command instanceof MovementCommandBlock || command instanceof  CommandBlock
+						|| command instanceof FluxControlBlock) {
+				paneCommands.getChildren().add(command);
 			}
 		}
 	}
@@ -319,8 +300,8 @@ public class MainController implements Initializable {
 			FluxControlBlock sourceParent = getParenteBlock(draggedBlock.getParent());
 			//System.out.printf("SP: %s, SB: %s, TP: %s, TB: %s\n", sourceParent, draggedBlock, targetParent, targetBlock);
 			// Se foi droppado no mesmo parent ou no mesmo lugar então cancela
-			if(targetParent == sourceParent && draggedBlock == null || targetBlock == draggedBlock || sourceParent == targetBlock) {
-				//System.out.println("Mesmo parente");
+			if(targetParent == sourceParent && (targetBlock == draggedBlock || sourceParent == targetBlock)) {
+				System.out.println("Ignorando drag");
 				// faz com que o bloco pare de ignorar MouseEvents
 				draggedBlock.setMouseTransparent(false);
 				return;
@@ -358,9 +339,14 @@ public class MainController implements Initializable {
 		newBlock.setDragAnchor(evt.getSceneX(), evt.getSceneY());
 		addEventsForDraggableBlock(newBlock);
 		addEventsForTargetBlock(newBlock);
+
 		if (newBlock instanceof FluxControlBlock) {
 			initializeDragEventsTarget((FluxControlBlock) newBlock);
 		}
 		return newBlock;
+	}
+
+	public void executaCompilacao() {
+		System.out.println(rootBlock.generateCode());
 	}
 }

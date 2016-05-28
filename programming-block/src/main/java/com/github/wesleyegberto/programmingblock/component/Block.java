@@ -15,7 +15,7 @@ import javafx.scene.shape.Shape;
  * @author Wesley
  */
 public abstract class Block extends Region {
-	public static final double TEMPLATE_FACTOR_SIZE = 0.7;
+	public static final double TEMPLATE_FACTOR_SIZE = 0.6;
 	private static int commonId = 1;
 	protected int id;
 	

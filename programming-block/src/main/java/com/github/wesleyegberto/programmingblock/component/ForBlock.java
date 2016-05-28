@@ -46,16 +46,11 @@ public class ForBlock extends FluxControlBlock {
 
 		createBlock();
 	}
-	
+
 	@Override
 	public ForBlock cloneBlock() {
 		return new ForBlock(headerBackgroundImage, leftBarBackgroundImage, footerBackgroundImage, textForImage,
-			textToImage, textDoImage, operandImage, getWidth(), getHeight(), false);
-	}
-
-	@Override
-	public String generateCode() {
-		return code;
+			textToImage, textDoImage, operandImage, originalWidth, originalHeight, false);
 	}
 
 	@Override
@@ -149,7 +144,9 @@ public class ForBlock extends FluxControlBlock {
 
 		// Center
 		boxCode = new VBox(0.0);
-		boxCode.setMinSize(factoredWidth, factoredHeight);
+		if(!isTemplate()) {
+			boxCode.setMinSize(factoredWidth, factoredHeight);
+		}
 		layout.setCenter(boxCode);
 
 		// Left
@@ -158,6 +155,26 @@ public class ForBlock extends FluxControlBlock {
 		// Footer
 		layout.setBottom(createFooterFromResource(footerBackgroundImage));
 
+	}
+
+	@Override
+	public String generateCode() {
+		StringBuilder code = new StringBuilder("for(");
+		if(initialValue != null) {
+			code.append("i=");
+			code.append(initialValue.generateCode());
+		}
+		code.append(";");
+		if(finalValue != null) {
+			code.append("i<=");
+			code.append(finalValue.generateCode());
+		}
+		code.append(";i=i+1){");
+		for(Block block : listInternalCommands) {
+			code.append(block.generateCode());
+		}
+		code.append("}");
+		return code.toString();
 	}
 
 	public static ForBlockBuilder createBuilder() {

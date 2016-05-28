@@ -37,11 +37,6 @@ public class RelationalOperatorBlock extends Block {
 	}
 
 	@Override
-	public String generateCode() {
-		return type.getType();
-	}
-
-	@Override
 	protected void createBlock() {
 		Shape blockClip = createRectangle(0, 0, getWidth(), getHeight());
 		background.setClip(blockClip);
@@ -59,6 +54,16 @@ public class RelationalOperatorBlock extends Block {
 		pane.getChildren().add(imgTexto);
 
 		getChildren().add(pane);
+	}
+
+	@Override
+	public double applyFactor(double x) {
+		return x * (isTemplate() ? 0.8 : 1);
+	}
+
+	@Override
+	public String generateCode() {
+		return type.getType();
 	}
 
 	@Override

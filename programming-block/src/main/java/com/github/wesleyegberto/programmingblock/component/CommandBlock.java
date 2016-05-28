@@ -48,7 +48,7 @@ public class CommandBlock extends Block {
 
 	@Override
 	public String generateCode() {
-		return code;
+		return code + ";";
 	}
 
 	@Override

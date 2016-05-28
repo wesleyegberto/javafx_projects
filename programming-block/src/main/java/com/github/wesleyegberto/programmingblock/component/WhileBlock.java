@@ -50,14 +50,29 @@ public class WhileBlock extends FluxControlBlock {
 
 	@Override
 	public String generateCode() {
-		return code;
+		StringBuilder code = new StringBuilder("while(");
+		if(firstOperand != null) {
+			code.append(firstOperand.generateCode());
+		}
+		if(operator != null) {
+			code.append(operator.generateCode());
+		}
+		if(secondOperand != null) {
+			code.append(secondOperand.generateCode());
+		}
+		code.append("){");
+		for(Block block : listInternalCommands) {
+			code.append(block.generateCode());
+		}
+		code.append("}");
+		return code.toString();
 	}
 
 	@Override
 	protected void createBlock() {
 		setCursor(Cursor.DEFAULT);
 
-		double factoredWidth = applyFactor(Constants.BLOCK_WIDTH);
+		double factoredWidth = applyFactor(Constants.WHILE_BLOCK_WIDTH);
 		double factoredHeight = applyFactor(Constants.BLOCK_HEIGHT);
 
 		// Layout para os componentes interno
@@ -156,7 +171,9 @@ public class WhileBlock extends FluxControlBlock {
 
 		// Center
 		boxCode = new VBox(0.0);
-		boxCode.setMinSize(factoredWidth, factoredHeight);
+		if(!isTemplate()) {
+			boxCode.setMinSize(factoredWidth, factoredHeight);
+		}
 		layout.setCenter(boxCode);
 
 		// Left

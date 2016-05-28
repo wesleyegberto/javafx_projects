@@ -1,13 +1,10 @@
 package com.github.wesleyegberto.programmingblock.component;
 
 import com.github.wesleyegberto.programmingblock.component.util.Clipboard;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -52,7 +49,22 @@ public class IfBlock extends FluxControlBlock {
 
 	@Override
 	public String generateCode() {
-		return code;
+		StringBuilder code = new StringBuilder("if(");
+		if(firstOperand != null) {
+			code.append(firstOperand.generateCode());
+		}
+		if(operator != null) {
+			code.append(operator.generateCode());
+		}
+		if(secondOperand != null) {
+			code.append(secondOperand.generateCode());
+		}
+		code.append("){");
+		for(Block block : listInternalCommands) {
+			code.append(block.generateCode());
+		}
+		code.append("}");
+		return code.toString();
 	}
 
 	@Override
@@ -157,7 +169,9 @@ public class IfBlock extends FluxControlBlock {
 
 		// Center
 		boxCode = new VBox(0.0);
-		boxCode.setMinSize(factoredWidth, factoredHeight);
+		if(!isTemplate()) {
+			boxCode.setMinSize(factoredWidth, factoredHeight);
+		}
 		layout.setCenter(boxCode);
 
 		// Left

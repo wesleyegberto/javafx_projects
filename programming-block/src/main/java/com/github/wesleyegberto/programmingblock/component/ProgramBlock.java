@@ -1,12 +1,16 @@
 package com.github.wesleyegberto.programmingblock.component;
 
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
+import java.util.Iterator;
 
 /**
  * @author Wesley Egberto on 25/04/16.
@@ -67,6 +71,9 @@ public class ProgramBlock extends FluxControlBlock {
 	public String generateCode() {
 		StringBuilder code = new StringBuilder();
 		code.append("program{");
+		for(Block block : listInternalCommands) {
+			code.append(block.generateCode());
+		}
 		code.append("}");
 		return code.toString();
 	}

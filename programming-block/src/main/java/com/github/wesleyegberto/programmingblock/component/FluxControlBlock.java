@@ -38,8 +38,8 @@ public abstract class FluxControlBlock extends Block {
 	}
 
 	public void addBlock(Block newBlock) {
-		this.listInternalCommands.add(newBlock);
 		boxCode.getChildren().add(newBlock);
+		listInternalCommands.add(newBlock);
 	}
 
 	public void addBlockAfter(Block newBlock, Block block) {
@@ -47,17 +47,20 @@ public abstract class FluxControlBlock extends Block {
 			addBlock(newBlock);
 		} else {
 			int index = boxCode.getChildren().indexOf(block);
+			int listIndex = listInternalCommands.indexOf(block);
 			if (index >= 0) {
 				boxCode.getChildren().add(index + 1, newBlock);
+				listInternalCommands.add(listIndex + 1, newBlock);
 			} else {
 				boxCode.getChildren().add(newBlock);
+				listInternalCommands.add(newBlock);
 			}
 		}
 	}
 
 	public void removeBlock(Block block) {
+		boxCode.getChildren().remove(block);
 		listInternalCommands.remove(block);
-		System.out.println(boxCode.getChildren().remove(block));
 	}
 
 	protected Shape createHeaderShape() {

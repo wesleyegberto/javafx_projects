@@ -10,27 +10,12 @@ import javafx.scene.shape.Shape;
  */
 public class ValueParamBlock extends ParamBlock {
 	private Object value;
-	private ComboBox<Number> combobox;
+	private ComboBox<String> combobox;
 
 	public ValueParamBlock(String backgroundImage, double width, double height, boolean isTemplate) {
 		super(backgroundImage, null, width, height, isTemplate);
 
 		createBlock();
-	}
-
-	@Override
-	public ValueParamBlock cloneBlock() {
-		ValueParamBlock block = new ValueParamBlock(backgroundPath, getWidth(), getHeight(), false);
-		block.startDragX = super.startDragX;
-		block.startDragY = super.startDragY;
-		block.dragAnchor = super.dragAnchor;
-		block.value = value;
-		return block;
-	}
-
-	@Override
-	public String generateCode() {
-		return combobox.getValue().toString();
 	}
 
 	@Override
@@ -51,10 +36,36 @@ public class ValueParamBlock extends ParamBlock {
 		// Lista de valores
 		combobox = new ComboBox<>();
 		combobox.setPrefWidth(80);
-		combobox.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+		for(int i = 1; i <= 10; i++) {
+			combobox.getItems().add(String.valueOf(i));
+		}
 		combobox.setEditable(true);
 		layout.getChildren().add(combobox);
 
+	}
+
+	@Override
+	public ValueParamBlock cloneBlock() {
+		ValueParamBlock block = new ValueParamBlock(backgroundPath, getWidth(), getHeight(), false);
+		block.startDragX = super.startDragX;
+		block.startDragY = super.startDragY;
+		block.dragAnchor = super.dragAnchor;
+		block.value = value;
+		return block;
+	}
+
+	@Override
+	public double applyFactor(double x) {
+		return x * (isTemplate() ? 0.8 : 1);
+	}
+
+	@Override
+	public String generateCode() {
+		if(!"".equals(combobox.getValue()) && !combobox.getValue().isEmpty()) {
+			return combobox.getValue();
+		} else {
+			return "";
+		}
 	}
 
 	@Override

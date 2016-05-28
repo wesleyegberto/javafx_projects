@@ -20,20 +20,6 @@ public class FunctionOperandBlock extends ParamBlock {
 	}
 
 	@Override
-	public FunctionOperandBlock cloneBlock() {
-		FunctionOperandBlock block = new FunctionOperandBlock(backgroundPath, getWidth(), getHeight(), false, code);
-		block.startDragX = super.startDragX;
-		block.startDragY = super.startDragY;
-		block.dragAnchor = super.dragAnchor;
-		return block;
-	}
-
-	@Override
-	public String generateCode() {
-		return code + "()";
-	}
-
-	@Override
 	protected void createBlock() {
 		Shape blockClip = createRectangle(0, 0, getWidth(), getHeight());
 		background.setClip(blockClip);
@@ -43,6 +29,25 @@ public class FunctionOperandBlock extends ParamBlock {
 
 		getChildren().add(background);
 
+	}
+
+	@Override
+	public FunctionOperandBlock cloneBlock() {
+		FunctionOperandBlock block = new FunctionOperandBlock(backgroundPath, getWidth(), getHeight(), false, code);
+		block.startDragX = super.startDragX;
+		block.startDragY = super.startDragY;
+		block.dragAnchor = super.dragAnchor;
+		return block;
+	}
+
+	@Override
+	public double applyFactor(double x) {
+		return x * (isTemplate() ? 0.8 : 1);
+	}
+
+	@Override
+	public String generateCode() {
+		return code + "()";
 	}
 
 	@Override

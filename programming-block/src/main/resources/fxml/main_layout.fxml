@@ -7,11 +7,11 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.wesleyegberto.programmingblock.controller.MainController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.wesleyegberto.programmingblock.controller.MainController">
    <left>
-      <ScrollPane maxWidth="450.0" minHeight="710.0" prefWidth="450.0" BorderPane.alignment="CENTER">
+      <ScrollPane minHeight="410.0" maxWidth="520.0" BorderPane.alignment="CENTER">
          <content>
-            <VBox fx:id="commandToolbox" maxWidth="410.0" prefWidth="410.0">
+            <VBox fx:id="commandToolbox">
                 <children>
                 </children>
             </VBox>
@@ -51,7 +51,7 @@
                   <Glow />
                </effect>
             </Button>
-            <Button fx:id="btnCompile" alignment="CENTER" mnemonicParsing="false" prefHeight="47.0" prefWidth="196.0" text="Executar">
+            <Button fx:id="btnCompile" onAction="#executaCompilacao" alignment="CENTER" mnemonicParsing="false" prefHeight="47.0" prefWidth="196.0" text="Executar">
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
