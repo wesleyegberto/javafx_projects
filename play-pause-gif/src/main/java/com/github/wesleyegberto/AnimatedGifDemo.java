@@ -23,97 +23,97 @@ import javafx.util.Duration;
  */
 public class AnimatedGifDemo extends Application {
 
-    @Override
+	@Override
 	public void start(Stage primaryStage) throws URISyntaxException {
 
-        HBox root = new HBox();
+		HBox root = new HBox();
 
-        // TODO: provide gif file, ie exchange banana.gif with your file
-        Animation ani = new AnimatedGif(getClass().getResource("/images/acao_avancar.gif").toExternalForm(), 1000);
-        ani.setCycleCount(10);
-        ani.play();
+		// TODO: provide gif file, ie exchange banana.gif with your file
+		Animation ani = new AnimatedGif(getClass().getResource("/images/acao_avancar.gif").toExternalForm(), 1000);
+		ani.setCycleCount(10);
+		ani.play();
 
-        Button btPause = new Button( "Pause");
-        btPause.setOnAction( e -> ani.pause());
+		Button btPause = new Button("Pause");
+		btPause.setOnAction(e -> ani.pause());
 
-        Button btResume = new Button( "Resume");
-        btResume.setOnAction( e -> ani.play());
+		Button btResume = new Button("Resume");
+		btResume.setOnAction(e -> ani.play());
 
-        root.getChildren().addAll( ani.getView(), btPause, btResume);
+		root.getChildren().addAll(ani.getView(), btPause, btResume);
 
-        Scene scene = new Scene(root, 1600, 900);
+		Scene scene = new Scene(root, 1600, 900);
 
-        primaryStage.setScene(scene);
-        primaryStage.show();
+		primaryStage.setScene(scene);
+		primaryStage.show();
 
-    }
+	}
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+	public static void main(String[] args) {
+		launch(args);
+	}
 
-    public class AnimatedGif extends Animation {
+	public class AnimatedGif extends Animation {
 
-        public AnimatedGif( String filename, double durationMs) {
+		public AnimatedGif(String filename, double durationMs) {
 
-            GifDecoder d = new GifDecoder();
-            d.read( filename);
+			GifDecoder d = new GifDecoder();
+			d.read(filename);
 
-            Image[] sequence = new Image[ d.getFrameCount()];
-            for( int i=0; i < d.getFrameCount(); i++) {
+			Image[] sequence = new Image[d.getFrameCount()];
+			for (int i = 0; i < d.getFrameCount(); i++) {
 
-                WritableImage wimg = null;
-                BufferedImage bimg = d.getFrame(i);
-                sequence[i] = SwingFXUtils.toFXImage( bimg, wimg);
+				WritableImage wimg = null;
+				BufferedImage bimg = d.getFrame(i);
+				sequence[i] = SwingFXUtils.toFXImage(bimg, wimg);
 
-            }
+			}
 
-            super.init( sequence, durationMs);
-        }
+			super.init(sequence, durationMs);
+		}
 
-    }
+	}
 
-    public class Animation extends Transition {
+	public class Animation extends Transition {
 
-        private ImageView imageView;
-        private int count;
+		private ImageView imageView;
+		private int count;
 
-        private int lastIndex;
+		private int lastIndex;
 
-        private Image[] sequence;
+		private Image[] sequence;
 
-        private Animation() {
-        }
+		private Animation() {
+		}
 
-        public Animation( Image[] sequence, double durationMs) {
-            init( sequence, durationMs);
-        }
+		public Animation(Image[] sequence, double durationMs) {
+			init(sequence, durationMs);
+		}
 
-        private void init( Image[] sequence, double durationMs) {
-            this.imageView = new ImageView(sequence[0]);
-            this.sequence = sequence;
-            this.count = sequence.length;
+		private void init(Image[] sequence, double durationMs) {
+			this.imageView = new ImageView(sequence[0]);
+			this.sequence = sequence;
+			this.count = sequence.length;
 
-            setCycleCount(1);
-            setCycleDuration(Duration.millis(durationMs));
-            setInterpolator(Interpolator.LINEAR);
+			setCycleCount(1);
+			setCycleDuration(Duration.millis(durationMs));
+			setInterpolator(Interpolator.LINEAR);
 
-        }
+		}
 
-        protected void interpolate(double k) {
+		protected void interpolate(double k) {
 
-            final int index = Math.min((int) Math.floor(k * count), count - 1);
-            if (index != lastIndex) {
-                imageView.setImage(sequence[index]);
-                lastIndex = index;
-            }
+			final int index = Math.min((int) Math.floor(k * count), count - 1);
+			if (index != lastIndex) {
+				imageView.setImage(sequence[index]);
+				lastIndex = index;
+			}
 
-        }
+		}
 
-        public ImageView getView() {
-            return imageView;
-        }
+		public ImageView getView() {
+			return imageView;
+		}
 
-    }
+	}
 
 }
