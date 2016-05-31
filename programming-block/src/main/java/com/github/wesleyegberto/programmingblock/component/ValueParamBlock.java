@@ -42,6 +42,7 @@ public class ValueParamBlock extends ParamBlock {
 		combobox.setTranslateY(5);
 		combobox.setPrefHeight(applyFactor(40d));
 		combobox.setPrefWidth(applyFactor(100d));
+		combobox.setStyle("-fx-font: 15px \"Arial\"; -fx-font-weight: bold;");
 		if(isTemplate()) {
 			combobox.setDisable(true);
 			combobox.setEditable(false);
