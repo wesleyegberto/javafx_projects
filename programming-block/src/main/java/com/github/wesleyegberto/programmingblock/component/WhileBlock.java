@@ -41,7 +41,11 @@ public class WhileBlock extends FluxControlBlock {
 
 		createBlock();
 	}
-	
+
+	public double applyFactor(double x) {
+		return x * (isTemplate() ? 0.533 : 1);
+	}
+
 	@Override
 	public WhileBlock cloneBlock() {
 		return new WhileBlock(headerBackgroundImage, leftBarBackgroundImage, footerBackgroundImage, textWhileImage, textDoImage,

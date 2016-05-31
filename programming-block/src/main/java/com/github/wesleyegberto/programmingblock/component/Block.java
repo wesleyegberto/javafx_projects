@@ -50,7 +50,6 @@ public abstract class Block extends Region {
 		// Se for Template então aplica os fatores para diminuir a imagem
 		connectionLeftPad = applyFactor(connectionLeftPad);
 		connectionWidth = applyFactor(connectionWidth);
-		connectionHeight = applyFactor(connectionHeight);
 		connectionBottomPad = applyFactor(connectionBottomPad);
 
 		// carrega o fundo do bloco

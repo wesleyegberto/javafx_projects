@@ -184,7 +184,7 @@ public class MovementCommandBlock extends Block {
 			RotateTransition rt = new RotateTransition(Duration.seconds(1), imgTank);
 			rt.setFromAngle(startAngle);
 			rt.setToAngle(endAngle);
-			rt.setCycleCount(4);
+			rt.setCycleCount(-1);
 			rt.setAutoReverse(false);
 			setOnMouseEntered(evt -> rt.play() );
 			setOnMouseExited(evt -> {

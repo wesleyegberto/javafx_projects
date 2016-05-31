@@ -1,8 +1,11 @@
 package com.github.wesleyegberto.programmingblock.component;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Shape;
 
 /**
@@ -23,30 +26,38 @@ public class ValueParamBlock extends ParamBlock {
 		Shape blockClip = createRectangle(0, 0, getWidth(), getHeight());
 		background.setClip(blockClip);
 		background.setFitWidth(getWidth());
-		background.setFitHeight(getHeight() + 16f);
+		background.setFitHeight(getHeight());
 		background.setCursor(Cursor.CLOSED_HAND);
 
-		getChildren().add(background);
 
 		// Layout para os componentes interno
-		HBox layout = new HBox();
-		layout.setPadding(StyleConstants.PARAM_INSETS);
+		StackPane layout = new StackPane();
+		layout.setAlignment(Pos.CENTER);
 		getChildren().add(layout);
+
+		layout.getChildren().add(background);
 
 		// Lista de valores
 		combobox = new ComboBox<>();
-		combobox.setPrefWidth(80);
-		for(int i = 1; i <= 10; i++) {
-			combobox.getItems().add(String.valueOf(i));
+		combobox.setTranslateY(5);
+		combobox.setPrefHeight(applyFactor(40d));
+		combobox.setPrefWidth(applyFactor(100d));
+		if(isTemplate()) {
+			combobox.setDisable(true);
+			combobox.setEditable(false);
+		} else {
+			for (int i = 1; i <= 10; i++) {
+				combobox.getItems().add(String.valueOf(i));
+			}
+			combobox.setEditable(true);
 		}
-		combobox.setEditable(true);
 		layout.getChildren().add(combobox);
 
 	}
 
 	@Override
 	public ValueParamBlock cloneBlock() {
-		ValueParamBlock block = new ValueParamBlock(backgroundPath, getWidth(), getHeight(), false);
+		ValueParamBlock block = new ValueParamBlock(backgroundPath, originalWidth, originalHeight, false);
 		block.startDragX = super.startDragX;
 		block.startDragY = super.startDragY;
 		block.dragAnchor = super.dragAnchor;
@@ -79,7 +90,7 @@ public class ValueParamBlock extends ParamBlock {
 
 	public static class ValueParamBlockBuilder {
 		private String backgroundImage;
-		private double width = 100d;
+		private double width = 130d;
 		private double height = 80d;
 		private boolean isTemplate;
 

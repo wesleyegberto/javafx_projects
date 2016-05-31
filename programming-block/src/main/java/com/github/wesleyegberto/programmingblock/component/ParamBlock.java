@@ -7,10 +7,15 @@ public abstract class ParamBlock extends Block {
 
 	public ParamBlock(String backgroundImage, String code, double width, double height, boolean isTemplate) {
 		super(backgroundImage, code, isTemplate, width, height);
-		setMinSize(width, height);
-		setPrefSize(width, height);
-		setMaxSize(width, height);
-		setWidth(width);
-		setHeight(height);
+		setMinSize(applyFactor(width), applyFactor(height));
+		setPrefSize(applyFactor(width), applyFactor(height));
+		setMaxSize(applyFactor(width), applyFactor(height));
+		setWidth(applyFactor(width));
+		setHeight(applyFactor(height));
+	}
+
+	@Override
+	public double applyFactor(double x) {
+		return x * (isTemplate() ? 0.8 : 1);
 	}
 }

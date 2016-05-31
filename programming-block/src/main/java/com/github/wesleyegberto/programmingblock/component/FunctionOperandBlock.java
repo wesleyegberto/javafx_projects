@@ -10,12 +10,6 @@ public class FunctionOperandBlock extends ParamBlock {
 	public FunctionOperandBlock(String backgroundImage, double width, double height, boolean isTemplate, String functionName) {
 		super(backgroundImage, functionName, width, height, isTemplate);
 
-		setWidth(width);
-		setHeight(height);
-		setMinSize(width, height);
-		setPrefSize(width, height);
-		setMaxSize(width, height);
-
 		createBlock();
 	}
 
@@ -33,16 +27,11 @@ public class FunctionOperandBlock extends ParamBlock {
 
 	@Override
 	public FunctionOperandBlock cloneBlock() {
-		FunctionOperandBlock block = new FunctionOperandBlock(backgroundPath, getWidth(), getHeight(), false, code);
+		FunctionOperandBlock block = new FunctionOperandBlock(backgroundPath, originalWidth, originalHeight, false, code);
 		block.startDragX = super.startDragX;
 		block.startDragY = super.startDragY;
 		block.dragAnchor = super.dragAnchor;
 		return block;
-	}
-
-	@Override
-	public double applyFactor(double x) {
-		return x * (isTemplate() ? 0.8 : 1);
 	}
 
 	@Override

@@ -1,31 +1,29 @@
 package com.github.wesleyegberto.programmingblock.component;
 
+import com.github.wesleyegberto.programmingblock.component.util.Animation;
 import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Shape;
+import javafx.util.Duration;
 
 /**
  * @author Wesley Egberto on 21/05/16.
  */
 public class CommandBlock extends Block {
 	private String textImagePath;
-	private String defaultImageSrc;
-	private String nextImageSrc;
+	private String[] animImagesSrc;
 
-	private Image defaultImage;
-	private Image nextImage;
+	private Image[] animImages;
+	private Animation animation;
 
 	private HBox layout;
-	private ImageView commandImg;
 
-	public CommandBlock(String backgroundImage, String textImagePath, String defaultImage, String nextImage,
-						String code, boolean isTemplate) {
+	public CommandBlock(String backgroundImage, String textImagePath, String[] animImages, String code, boolean isTemplate) {
 		super(backgroundImage, code, isTemplate, Constants.BLOCK_WIDTH, Constants.BLOCK_HEIGHT);
 		this.textImagePath = textImagePath;
-		this.defaultImageSrc = defaultImage;
-		this.nextImageSrc = nextImage;
+		this.animImagesSrc = animImages;
 
 		setWidth(applyFactor(Constants.BLOCK_WIDTH));
 		setHeight(applyFactor(Constants.BLOCK_HEIGHT));
@@ -38,8 +36,7 @@ public class CommandBlock extends Block {
 	@Override
 	public CommandBlock cloneBlock() {
 		CommandBlock block = new CommandBlockBuilder().setBackgroundImage(backgroundPath).setTextImage(textImagePath)
-									.setDefaultImage(defaultImageSrc).setNextImage(nextImageSrc).setCode(code)
-									.setTemplate(false).build();
+									.setAnimImages(animImagesSrc).setCode(code).setTemplate(false).build();
 		block.startDragX = super.startDragX;
 		block.startDragY = super.startDragY;
 		block.dragAnchor = super.dragAnchor;
@@ -78,24 +75,26 @@ public class CommandBlock extends Block {
 		}
 		layout.getChildren().add(imgTexto);
 
-		this.defaultImage = new Image(getClass().getResourceAsStream(defaultImageSrc));
-		this.nextImage = new Image(getClass().getResourceAsStream(nextImageSrc));
+		this.animImages = new Image[animImagesSrc.length];
+		for(int i = 0; i < animImagesSrc.length; i++) {
+			animImages[i] = new Image(getClass().getResourceAsStream(animImagesSrc[i]));
+		}
+		animation = new Animation(animImages, 1000);
+		//animation.setAutoReverse(true);
+		animation.setCycleCount(10);
 
-		this.commandImg = new ImageView(defaultImage);
+		ImageView commandImg = animation.getImageView();
 		commandImg.setCursor(Cursor.HAND);
 		if(isTemplate()) {
 			commandImg.setFitHeight(getHeight());
-			commandImg.setFitWidth(applyFactor(defaultImage.getWidth()));
+			commandImg.setFitWidth(applyFactor(animImages[0].getWidth()));
 		}
 		layout.getChildren().add(commandImg);
 
-		setOnMouseEntered(evt -> {
-			commandImg.setImage(nextImage);
-			commandImg.setFitWidth(applyFactor(nextImage.getWidth()));
-		});
+		setOnMouseEntered(evt -> animation.play());
 		setOnMouseExited(evt -> {
-			commandImg.setImage(defaultImage);
-			commandImg.setFitWidth(applyFactor(defaultImage.getWidth()));
+			animation.jumpTo(Duration.ZERO);
+			animation.stop();
 		});
 
 	}
@@ -108,8 +107,7 @@ public class CommandBlock extends Block {
 	public static class CommandBlockBuilder {
 		private String backgroundImage = Constants.BLOCK_BACKGROUND_IMAGE;
 		private String textImage;
-		private String defaultImage;
-		private String nextImage;
+		private String[] animImages;
 		private String code;
 		private boolean isTemplate;
 
@@ -123,13 +121,8 @@ public class CommandBlock extends Block {
 			return this;
 		}
 
-		public CommandBlockBuilder setDefaultImage(String defaultImage) {
-			this.defaultImage = defaultImage;
-			return this;
-		}
-
-		public CommandBlockBuilder setNextImage(String nextImage) {
-			this.nextImage = nextImage;
+		public CommandBlockBuilder setAnimImages(String[] animImages) {
+			this.animImages = animImages;
 			return this;
 		}
 
@@ -144,7 +137,7 @@ public class CommandBlock extends Block {
 		}
 
 		public CommandBlock build() {
-			return new CommandBlock(backgroundImage, textImage, defaultImage, nextImage, code, isTemplate);
+			return new CommandBlock(backgroundImage, textImage, animImages, code, isTemplate);
 		}
 	}
 }

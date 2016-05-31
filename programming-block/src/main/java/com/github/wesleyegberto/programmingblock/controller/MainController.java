@@ -78,28 +78,36 @@ public class MainController implements Initializable {
 
 			// Comandos de ações
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_acende_led_verde.png")
-				.setDefaultImage("/images/acoes/led_verde.png").setNextImage("/images/acoes/led_apagado.png")
-				.setCode("acendeLedVerde()").setTemplate(true).build(),
+				.setAnimImages(new String[] {
+					"/images/acoes/led_verde_light.png",
+					"/images/acoes/led_apagado.png", "/images/acoes/led_verde.png", "/images/acoes/led_verde_light.png"
+				}).setCode("acendeLedVerde()").setTemplate(true).build(),
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_apagar_led_verde.png")
-				.setDefaultImage("/images/acoes/led_apagado.png").setNextImage("/images/acoes/led_verde.png")
-				.setCode("apagaLedVerde()").setTemplate(true).build(),
+				.setAnimImages(new String[] {
+				"/images/acoes/led_apagado.png", "/images/acoes/led_verde_light.png", "/images/acoes/led_verde.png"
+				}).setCode("apagaLedVerde()").setTemplate(true).build(),
+
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_acende_led_amarelo.png")
-				.setDefaultImage("/images/acoes/led_amarelo.png").setNextImage("/images/acoes/led_apagado.png")
-				.setCode("acendeLedAmarelo()").setTemplate(true).build(),
+				.setAnimImages(new String[] {
+					"/images/acoes/led_amarelo_light.png", "/images/acoes/led_apagado.png", "/images/acoes/led_amarelo.png"
+				}).setCode("acendeLedAmarelo()").setTemplate(true).build(),
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_apagar_led_amarelo.png")
-				.setDefaultImage("/images/acoes/led_apagado.png").setNextImage("/images/acoes/led_amarelo.png")
-				.setCode("apagaLedAmarelo()").setTemplate(true).build(),
+				.setAnimImages(new String[] {
+				"/images/acoes/led_apagado.png", "/images/acoes/led_amarelo_light.png", "/images/acoes/led_amarelo.png",
+				}).setCode("apagaLedAmarelo()").setTemplate(true).build(),
+
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_acende_led_vermelho.png")
-				.setDefaultImage("/images/acoes/led_vermelho.png").setNextImage("/images/acoes/led_apagado.png")
-				.setCode("acendeLedVermelho()").setTemplate(true).build(),
+				.setAnimImages(new String[] {
+					"/images/acoes/led_vermelho_light.png", "/images/acoes/led_apagado.png", "/images/acoes/led_vermelho.png"
+				}).setCode("acendeLedVermelho()").setTemplate(true).build(),
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_apagar_led_vermelho.png")
-				.setDefaultImage("/images/acoes/led_apagado.png").setNextImage("/images/acoes/led_vermelho.png")
-				.setCode("apagaLedVermelho()").setTemplate(true).build(),
+				.setAnimImages(new String[] {
+				"/images/acoes/led_apagado.png", "/images/acoes/led_vermelho_light.png", "/images/acoes/led_vermelho.png"
+				}).setCode("apagaLedVermelho()").setTemplate(true).build(),
 
 			// Parâmetros e Operandos
 			ValueParamBlock.createBuilder().setBackgroundImage("/images/param_value.png").setTemplate(true).build(),
-			FunctionOperandBlock.createBuilder()
-				.setBackgroundImage("/images/funcao_medir_distancia.png").setWidth(130d)
+			FunctionOperandBlock.createBuilder().setBackgroundImage("/images/funcao_medir_distancia.png")
 				.setTemplate(true).setFunctionName("medirDistancia").build(),
 
 			// Operadores relacionais
@@ -154,7 +162,7 @@ public class MainController implements Initializable {
 		};
 
 		HBox boxRelationalOp = new HBox(5);
-		HBox boxOperands = new HBox();
+		HBox boxOperands = new HBox(5);
 		//VBox boxMovementCommands = new VBox(5);
 		//VBox boxActionCommands = new VBox(5);
 		FlowPane paneCommands = new FlowPane(5.0, 5.0);
