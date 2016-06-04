@@ -64,10 +64,10 @@ public class MainController implements Initializable {
 		Block[] defaultCommands = {
 			// Comandos de movimentos
 			MovementCommandBlock.createBuilder().setTextImage("/images/texto_avancar.png")
-				.setCommandImage(Constants.TANK_IMAGE).setCode("avancar(:param)")
+				.setCommandImage(Constants.TANK_IMAGE).setCode("avanca(:param)")
 				.setTranslationX(0, 100, 0, 0).setHasParameter(true).setTemplate(true).build(),
 			MovementCommandBlock.createBuilder().setTextImage("/images/texto_recuar.png")
-				.setCommandImage(Constants.TANK_IMAGE).setCode("recuar(:param)")
+				.setCommandImage(Constants.TANK_IMAGE).setCode("recua(:param)")
 				.setTranslationX(100, 0, 0, 0).setHasParameter(true).setTemplate(true).build(),
 			MovementCommandBlock.createBuilder().setTextImage("/images/texto_esquerda.png")
 				.setCommandImage(Constants.TANK_TOP_IMAGE).setCode("viraEsquerda()")
