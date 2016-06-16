@@ -73,7 +73,7 @@ public class ValueParamBlock extends ParamBlock {
 
 	@Override
 	public String generateCode() {
-		if(!"".equals(combobox.getValue()) && !combobox.getValue().isEmpty()) {
+		if(combobox.getValue() != null && !"".equals(combobox.getValue()) && !combobox.getValue().isEmpty()) {
 			return combobox.getValue();
 		} else {
 			return "";

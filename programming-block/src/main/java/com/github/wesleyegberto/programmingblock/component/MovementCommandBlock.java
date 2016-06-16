@@ -126,12 +126,13 @@ public class MovementCommandBlock extends Block {
 			imgParam.setCursor(Cursor.HAND);
 			if(isTemplate()) {
 				imgParam.setFitWidth(applyFactor(imgParam.getImage().getWidth()));
-			}
-			if(!isTemplate()) {
+			} else {
 				imgParam.setOnMouseDragReleased(evt -> {
 					Clipboard clipboard = Clipboard.getInstance();
 					//System.out.println("Mouse drag released: " + clipboard.getValue());
-					if (clipboard.hasValue() && clipboard.getValue() instanceof ParamBlock) {
+					if (clipboard.hasValue() && clipboard.getValue() instanceof FunctionOperandBlock) {
+						return;
+					} else if (clipboard.hasValue() && clipboard.getValue() instanceof ParamBlock) {
 						param = clipboard.getValue().cloneBlock();
 						param.setDragAnchor(evt.getSceneX(), evt.getSceneY());
 						param.setOnMouseDragReleased(imgParam.getOnMouseDragReleased());
