@@ -5,11 +5,9 @@ import com.github.wesleyegberto.programmingblock.component.util.Clipboard;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
-import javafx.scene.Cursor;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
+import javafx.scene.*;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.layout.*;
@@ -31,6 +29,12 @@ public class MainController implements Initializable {
 	private ScrollPane paneCode;
 	@FXML
 	private VBox boxCode;
+	@FXML
+	private ImageView imgVwTrash;
+	@FXML
+	private ImageView imgVwClean;
+	@FXML
+	private ImageView imgVwExecute;
 
 	private Clipboard clipboard = Clipboard.getInstance();
 
@@ -50,6 +54,57 @@ public class MainController implements Initializable {
 		VBox.setVgrow(paneCode, Priority.SOMETIMES);
 		commandToolbox.setSpacing(0);
 
+		Image imgDelete = new Image(getClass().getResourceAsStream("/images/ico_delete.png"));
+		imgVwTrash.setFitHeight(64);
+		imgVwTrash.setImage(imgDelete);
+		// Events as a target
+		imgVwTrash.setOnMouseDragEntered(evt -> {
+			imgVwTrash.setScaleX(1.1);
+			imgVwTrash.setScaleY(1.1);
+			if(clipboard.hasValue() && !clipboard.getValue().isTemplate()) {
+				clipboard.getValue().setOpacity(0.5);
+				dragImageView.setOpacity(0.5);
+			}
+			evt.consume();
+		});
+		imgVwTrash.setOnMouseDragExited(evt -> {
+			imgVwTrash.setScaleX(1);
+			imgVwTrash.setScaleY(1);
+			dragImageView.setOpacity(1);
+			if(clipboard.hasValue() && !clipboard.getValue().isTemplate()) {
+				clipboard.getValue().setOpacity(1);
+			}
+			evt.consume();
+		});
+		imgVwTrash.setOnMouseDragReleased(evt -> {
+			if(!clipboard.hasValue()) {
+				evt.consume();
+				return;
+			}
+			if(clipboard.getValue() instanceof Block && !clipboard.getValue().isTemplate()) {
+				//System.out.println("Item " + clipboard.getValue() + " released at trash");
+				FluxControlBlock targetParent = getParenteBlock(clipboard.getValue().getParent());
+				targetParent.removeBlock(clipboard.getValue());
+				clipboard.clear();
+				sceneRoot.getChildren().remove(dragImageView);
+			}
+			evt.consume();
+		});
+
+		Image imgClean = new Image(getClass().getResourceAsStream("/images/ico_clean.png"));
+		imgVwClean.setFitHeight(64.0);
+		imgVwClean.setImage(imgClean);
+		imgVwClean.setCursor(Cursor.HAND);
+		imgVwClean.setOnMouseClicked(evt -> cleanCode());
+		addMouseOverScale(imgVwClean);
+
+		Image imgExecute = new Image(getClass().getResourceAsStream("/images/ico_green_play.png"));
+		imgVwExecute.setFitHeight(64.0);
+		imgVwExecute.setImage(imgExecute);
+		imgVwExecute.setCursor(Cursor.HAND);
+		imgVwExecute.setOnMouseClicked(evt -> executeCode());
+		addMouseOverScale(imgVwExecute);
+
 		// Criação do bloco principal
 		rootBlock = ProgramBlock.createBuilder()
 				.setHeaderBackgroundImage("/images/programa/header_programa.png")
@@ -61,11 +116,43 @@ public class MainController implements Initializable {
 
 		initializeDragEventsTarget(rootBlock);
 		
-		Block[] defaultCommands = {
+		Block[] defaultCommands = createCommands();
+
+		HBox boxRelationalOp = new HBox(5);
+		HBox boxOperands = new HBox(5);
+		//VBox boxMovementCommands = new VBox(5);
+		//VBox boxActionCommands = new VBox(5);
+		FlowPane paneCommands = new FlowPane(5.0, 5.0);
+		paneCommands.setMaxWidth(500);
+		paneCommands.setPrefWrapLength(500.0);
+		//VBox boxFlux = new VBox(5);
+
+		commandToolbox.getChildren().add(boxRelationalOp);
+		commandToolbox.getChildren().add(boxOperands);
+		//commandToolbox.getChildren().add(boxMovementCommands);
+		//commandToolbox.getChildren().add(boxActionCommands);
+		commandToolbox.getChildren().add(paneCommands);
+		//commandToolbox.getChildren().add(boxFlux);
+
+		for (Block command : defaultCommands) {
+			addEventsForDraggableBlock(command);
+			if(command instanceof RelationalOperatorBlock) {
+				boxRelationalOp.getChildren().add(command);
+			} else if(command instanceof ParamBlock) {
+				boxOperands.getChildren().add(command);
+			} else if(command instanceof MovementCommandBlock || command instanceof  CommandBlock
+						|| command instanceof FluxControlBlock) {
+				paneCommands.getChildren().add(command);
+			}
+		}
+	}
+
+	private Block[] createCommands() {
+		return new Block[] {
 			// Comandos de movimentos
 			MovementCommandBlock.createBuilder().setTextImage("/images/texto_avancar.png")
-				.setCommandImage(Constants.TANK_IMAGE).setCode("avanca(:param)")
-				.setTranslationX(0, 100, 0, 0).setHasParameter(true).setTemplate(true).build(),
+			.setCommandImage(Constants.TANK_IMAGE).setCode("avanca(:param)")
+			.setTranslationX(0, 100, 0, 0).setHasParameter(true).setTemplate(true).build(),
 			MovementCommandBlock.createBuilder().setTextImage("/images/texto_recuar.png")
 				.setCommandImage(Constants.TANK_IMAGE).setCode("recua(:param)")
 				.setTranslationX(100, 0, 0, 0).setHasParameter(true).setTemplate(true).build(),
@@ -84,7 +171,7 @@ public class MainController implements Initializable {
 				}).setCode("acendeLedVerde()").setTemplate(true).build(),
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_apagar_led_verde.png")
 				.setAnimImages(new String[] {
-				"/images/acoes/led_apagado.png", "/images/acoes/led_verde_light.png", "/images/acoes/led_verde.png"
+					"/images/acoes/led_apagado.png", "/images/acoes/led_verde_light.png", "/images/acoes/led_verde.png"
 				}).setCode("apagaLedVerde()").setTemplate(true).build(),
 
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_acende_led_amarelo.png")
@@ -93,7 +180,7 @@ public class MainController implements Initializable {
 				}).setCode("acendeLedAmarelo()").setTemplate(true).build(),
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_apagar_led_amarelo.png")
 				.setAnimImages(new String[] {
-				"/images/acoes/led_apagado.png", "/images/acoes/led_amarelo_light.png", "/images/acoes/led_amarelo.png",
+					"/images/acoes/led_apagado.png", "/images/acoes/led_amarelo_light.png", "/images/acoes/led_amarelo.png",
 				}).setCode("apagaLedAmarelo()").setTemplate(true).build(),
 
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_acende_led_vermelho.png")
@@ -102,7 +189,7 @@ public class MainController implements Initializable {
 				}).setCode("acendeLedVermelho()").setTemplate(true).build(),
 			CommandBlock.createBuilder().setTextImage("/images/acoes/texto_apagar_led_vermelho.png")
 				.setAnimImages(new String[] {
-				"/images/acoes/led_apagado.png", "/images/acoes/led_vermelho_light.png", "/images/acoes/led_vermelho.png"
+					"/images/acoes/led_apagado.png", "/images/acoes/led_vermelho_light.png", "/images/acoes/led_vermelho.png"
 				}).setCode("apagaLedVermelho()").setTemplate(true).build(),
 
 			// Parâmetros e Operandos
@@ -158,36 +245,21 @@ public class MainController implements Initializable {
 				.setTextDoImage("/images/enquanto/texto_faca.png")
 				.setOperandImage("/images/param_comando.png")
 				.setTemplate(true)
-				.build(),
+				.build()
 		};
+	}
 
-		HBox boxRelationalOp = new HBox(5);
-		HBox boxOperands = new HBox(5);
-		//VBox boxMovementCommands = new VBox(5);
-		//VBox boxActionCommands = new VBox(5);
-		FlowPane paneCommands = new FlowPane(5.0, 5.0);
-		paneCommands.setMaxWidth(500);
-		paneCommands.setPrefWrapLength(500.0);
-		//VBox boxFlux = new VBox(5);
-
-		commandToolbox.getChildren().add(boxRelationalOp);
-		commandToolbox.getChildren().add(boxOperands);
-		//commandToolbox.getChildren().add(boxMovementCommands);
-		//commandToolbox.getChildren().add(boxActionCommands);
-		commandToolbox.getChildren().add(paneCommands);
-		//commandToolbox.getChildren().add(boxFlux);
-
-		for (Block command : defaultCommands) {
-			addEventsForDraggableBlock(command);
-			if(command instanceof RelationalOperatorBlock) {
-				boxRelationalOp.getChildren().add(command);
-			} else if(command instanceof ParamBlock) {
-				boxOperands.getChildren().add(command);
-			} else if(command instanceof MovementCommandBlock || command instanceof  CommandBlock
-						|| command instanceof FluxControlBlock) {
-				paneCommands.getChildren().add(command);
-			}
-		}
+	private void addMouseOverScale(Node node) {
+		node.setOnMouseEntered(evt -> {
+			node.setScaleX(1.1);
+			node.setScaleY(1.1);
+			evt.consume();
+		});
+		node.setOnMouseExited(evt -> {
+			node.setScaleX(1);
+			node.setScaleY(1);
+			evt.consume();
+		});
 	}
 
 	private void initializeDragEventsTarget(final FluxControlBlock block) {
@@ -196,12 +268,12 @@ public class MainController implements Initializable {
 
 		droppableArea.setOnMouseDragEntered(evt -> {
 			//System.out.println("Mouse drag entered at inner " + block);
-			droppableArea.setStyle("-fx-border-color:red;-fx-border-width:2;-fx-border-style:solid;");
+			//droppableArea.setStyle("-fx-border-color:red;-fx-border-width:2;-fx-border-style:solid;");
 			evt.consume();
 		});
 		droppableArea.setOnMouseDragExited(evt -> {
 			//System.out.println("Mouse drag exited from inner " + block);
-			droppableArea.setStyle("-fx-border-style:none;");
+			//droppableArea.setStyle("-fx-border-style:none;");
 			evt.consume();
 		});
 		droppableArea.setOnMouseDragReleased(evt -> {
@@ -309,7 +381,6 @@ public class MainController implements Initializable {
 			//System.out.printf("SP: %s, SB: %s, TP: %s, TB: %s\n", sourceParent, draggedBlock, targetParent, targetBlock);
 			// Se foi droppado no mesmo parent ou no mesmo lugar então cancela
 			if(targetParent == sourceParent && (targetBlock == draggedBlock || sourceParent == targetBlock)) {
-				System.out.println("Ignorando drag");
 				// faz com que o bloco pare de ignorar MouseEvents
 				draggedBlock.setMouseTransparent(false);
 				return;
